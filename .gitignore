@@ -51,6 +51,7 @@ website/bookmarks/
 */website/
 *.txt
 !requirements.txt
+!requirements_dev.txt
 !README.md
 
 # Temporary files

@@ -1,0 +1,19 @@
+# Development dependencies
+pytest==7.4.4
+pytest-asyncio==0.21.1
+black==23.12.1
+flake8==6.1.0
+mypy==1.8.0
+pre-commit==3.6.0
+
+# Testing utilities
+httpx==0.26.0
+responses==0.24.1
+
+# Documentation
+sphinx==7.2.6
+myst-parser==2.0.0
+
+# Code quality
+isort==5.13.2
+bandit==1.7.5
