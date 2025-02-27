@@ -4,7 +4,8 @@ import nerif
 
 smart_model_name = "openrouter/deepseek/deepseek-r1"
 
-def report_parser(book_name, file_path):
+def report_parser(book_name):
+    file_path = f"{book_name}/parsed_data.csv"
     df = pd.read_csv(file_path)
     smart_model = nerif.model.SimpleChatModel(model=smart_model_name)
     
@@ -83,4 +84,4 @@ def report_parser(book_name, file_path):
     return report_response
 
 if __name__ == "__main__":
-    report_parser("窄门", "final.csv")
+    report_parser("战略级天使")

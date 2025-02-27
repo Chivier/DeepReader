@@ -121,34 +121,45 @@ class DoubanBookSpider:
             response = requests.get(review_url, headers=self.headers)
             text = response.text
             reviews.append([review_url, text])
-            # sleep 1-1.5 random seconds
-            time.sleep(random.uniform(1, 1.5))
+            # sleep 10-15 random seconds
+            time.sleep(random.uniform(10, 15))
             
         return reviews
     
-    def crawl_book(self, book_name, output_dir="example_book"):
+    def crawl_book(self, book_name, limit=2):
         """主爬虫函数"""
         # 搜索图书
+        if not os.path.exists(f"{book_name}/website"):
+            os.makedirs(f"{book_name}/website")
+        else:
+            return
+            
         book_urls = self.search_book(book_name)
         if not book_urls:
             print(f"未找到图书: {book_name}")
             return
         
         # get book reviews urls
-        reviews_urls = self.get_review_urls(book_urls[0])
+        reviews_urls = []
+        for book_url in book_urls[:limit]:
+            reviews_urls.extend(self.get_review_urls(book_url))
         
         # get reviews
         reviews = self.get_reviews(reviews_urls)
         
-        # Create directory structure: {output_dir}/website/
-        if not os.path.exists(f"{output_dir}/website"):
-            os.makedirs(f"{output_dir}/website")
+        # Create directory structure: {book}/website/
+        if not os.path.exists(f"{book_name}/website"):
+            os.makedirs(f"{book_name}/website")
 
         for review in reviews:
             review_url = review[0]
             review_text = review[1]
             review_id = review_url.split('/')[-2]
             review_id = review_id.split('?')[0]
-            # Save review to {output_dir}/website/douban_{review_id}.txt
-            with open(f"{output_dir}/website/douban_{review_id}.txt", "w") as f:
+            # Save review to {book_name}/website/douban_{review_id}.txt
+            with open(f"{book_name}/website/douban_{review_id}.txt", "w") as f:
                 f.write(review_text)
+
+if __name__ == "__main__":
+    douban_spider = DoubanBookSpider()
+    douban_spider.crawl_book("战略级天使")

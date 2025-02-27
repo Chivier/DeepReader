@@ -23,6 +23,8 @@ class VideoCrawler:
         elif 'bilibili.com' in parsed_url.netloc:
             # Extract video ID from Bilibili URL
             # Assuming URL format: https://www.bilibili.com/video/BV1xx411c7mD
+            if '/' == parsed_url.path[-1]:
+                parsed_url.path = parsed_url.path[:-1]
             video_id = parsed_url.path.split('/')[-1]
             return f'bilibili_{video_id}'
         
@@ -35,7 +37,7 @@ class VideoCrawler:
         
         # Configure options to download video and extract audio in one go
         ydl_opts = {
-            'format': 'm4a' if 'bilibili.com' in url else 'mp4',
+            'format': 'mp4' if 'bilibili.com' in url else 'mp4',
             'outtmpl': temp_video_path,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
@@ -95,6 +97,7 @@ class VideoCrawler:
         # Transcribe audio
         if os.path.exists(text_path):
             print(f"Text file {text_path} already exists, skipping transcription...")
+            transcription = open(text_path, 'r', encoding='utf-8').read()
         else:
             print("Transcribing audio...")
             transcription = self.transcribe_audio(audio_path)
@@ -107,22 +110,23 @@ class VideoCrawler:
         else:
             print("Transcription failed")
 
-    def process_video_urls(self, urls):
+    def process_video_urls(self, url_file):
         """Process a list of video URLs"""
-        for url in urls:
+        
+        with open(url_file, "r") as f:
+            video_urls = f.readlines()
+        video_urls = [url.strip() for url in video_urls]
+        for url in video_urls:
             print(f"\nProcessing {url}")
             self.process_video_url(url)
 
 # Example usage
 if __name__ == "__main__":
     output_dir = "example_book"
-    with open("video_link.txt", "r") as f:
-        video_urls = f.readlines()
-    video_urls = [url.strip() for url in video_urls]
     # video_urls = [
     #     # "https://www.youtube.com/watch?v=Ru0keaEM5qM",
     #     "https://www.bilibili.com/video/BV1V7BbYBEFV"
     # ]
     
     crawler = VideoCrawler(output_dir)
-    crawler.process_video_urls(video_urls)
+    crawler.process_video_urls("video_link.txt")

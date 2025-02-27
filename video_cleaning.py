@@ -14,6 +14,7 @@ Strictly follow these rules:
 - NEVER surround the rewritten text with quotes
 - (maintainURLs)
 - Don't change emojis
+- Split the text into paragraphs
 
 Text: {text}
 
@@ -29,11 +30,11 @@ Fixed Text:
         f.write(response)
     return response
 
-def clean_all_videos(path="example_book/video"):
+def clean_all_video_files(path="example_book/video"):
     for file in os.listdir(path):
         if file.endswith(".txt") and not file.endswith("_cleaned.txt"):
             print(f"Cleaning {file}")
             clean_video(f"{path}/{file}")
 
 if __name__ == "__main__":
-    clean_all_videos()
+    clean_all_video_files()

@@ -4,7 +4,7 @@ import pandas as pd
 import json
 
 model_name = "openrouter/deepseek/deepseek-r1"
-model_name = "openrouter/anthropic/claude-3.5-sonnet:beta"
+model_name = "openrouter/anthropic/claude-3.7-sonnet:beta"
 # model_name = "ollama/deepseek-r1:32b"
 
 model = nerif.model.SimpleChatModel(model_name)
@@ -66,10 +66,9 @@ def review_parser(review_file):
 
 
 
-if __name__ == "__main__":    
-    douban_folder = "example_book/website"
-    video_folder = "example_book/video"
-    
+def parse_douban_reviews(book_path="example_book"):
+    douban_folder = os.path.join(book_path, "website")
+    video_folder = os.path.join(book_path, "video")
     parsed_data = []
     # create a table with the following columns:
 
@@ -80,23 +79,23 @@ if __name__ == "__main__":
     # - evaluation
     # - thinking
 
-    log_file = "log_2.txt"
+    log_file = "log.txt"
     # read all files in the douban_folder
-    # for file in os.listdir(douban_folder):
-    #     if file.endswith("cleaned.txt"):
-    #         review_id = file.split("_cleaned.txt")[0]
-    #         review_url = f"https://book.douban.com/review/{review_id}/"
-    #         file_path = os.path.join(douban_folder, file)
-    #         story, feeling, evaluation, thinking = review_parser(file_path)
-    #         source = "douban"   
-    #         parsed_data.append([source, review_url, story, feeling, evaluation, thinking])
-    #         with open(log_file, "a", encoding="utf-8") as f:
-    #             f.write(f"{file_path} parsed successfully\n")
-    #             f.write(f"story: {story}\n")
-    #             f.write(f"feeling: {feeling}\n")
-    #             f.write(f"evaluation: {evaluation}\n")
-    #             f.write(f"thinking: {thinking}\n")
-    #             f.write("\n")
+    for file in os.listdir(douban_folder):
+        if file.endswith("cleaned.txt"):
+            review_id = file.split("_cleaned.txt")[0]
+            review_url = f"https://book.douban.com/review/{review_id}/"
+            file_path = os.path.join(douban_folder, file)
+            story, feeling, evaluation, thinking = review_parser(file_path)
+            source = "douban"   
+            parsed_data.append([source, review_url, story, feeling, evaluation, thinking])
+            with open(log_file, "a", encoding="utf-8") as f:
+                f.write(f"{file_path} parsed successfully\n")
+                f.write(f"story: {story}\n")
+                f.write(f"feeling: {feeling}\n")
+                f.write(f"evaluation: {evaluation}\n")
+                f.write(f"thinking: {thinking}\n")
+                f.write("\n")
             
 
     # read all files in the video_folder
@@ -124,9 +123,11 @@ if __name__ == "__main__":
                 f.write("\n")
                 
     # save the parsed data to a csv file
+    csv_file_path = os.path.join(book_path, "parsed_data.csv")
+    json_file_path = os.path.join(book_path, "parsed_data.json")
     df = pd.DataFrame(parsed_data, columns=["source", "source_url", "story", "feeling", "evaluation", "thinking"])
-    df.to_csv("parsed_data_2.csv", index=False)
+    df.to_csv(csv_file_path, index=False)
 
     # save the parsed data to a json file
-    with open("parsed_data_2.json", "w", encoding="utf-8") as f:
+    with open(json_file_path, "w", encoding="utf-8") as f:
         json.dump(parsed_data, f, ensure_ascii=False)
