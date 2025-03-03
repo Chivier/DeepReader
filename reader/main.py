@@ -35,11 +35,11 @@ def main():
     print(f"Cleaning {book_name} from video")
     video_cleaning.clean_all_video_files(book_name + "/video")
 
-    # print(f"Parsing {book_name} from douban")
-    # parse_review.parse_douban_reviews(book_name)
+    print(f"Parsing {book_name} from douban")
+    parse_review.parse_douban_reviews(book_name)
     
-    # print(f"Generating report for {book_name}")
-    # report.report_parser(book_name)
+    print(f"Generating report for {book_name}")
+    report.report_parser(book_name)
 
 if __name__ == "__main__":
     main()
