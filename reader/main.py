@@ -19,14 +19,19 @@ def main():
     parser.add_argument("--video", type=str, default="video_link.txt")
     # book name
     parser.add_argument("--book", type=str, required=True)
+    # auto mode
+    parser.add_argument("--auto", type=bool, default=False)
     args = parser.parse_args()
     
     douban_count = args.douban
     video_url_file = args.video
     book_name = args.book
-   
-    # Require user input Y/N to crawl douban and video
-    user_input = input(f"Crawl {book_name} from douban? (Y/N): ")
+    auto = args.auto
+    
+    if auto:
+        user_input = "Y"
+    else:
+        user_input = input(f"Crawl {book_name} from douban? (Y/N): ")
     if user_input.upper() in ["Y", "YES"]:
         print(f"Starting to crawl {book_name} from douban, please wait...")
         # Create a background animation while the spider is working
@@ -43,7 +48,10 @@ def main():
         
         print("\nCrawling completed!")
     
-    user_input = input(f"Crawl {book_name} from video? (Y/N): ")
+    if auto:
+        user_input = "Y"
+    else:
+        user_input = input(f"Crawl {book_name} from video? (Y/N): ")
     if user_input.upper() in ["Y", "YES"]:
         print(f"Starting to crawl {book_name} from video, please wait...")
         print("Spider is working", end="", flush=True)
@@ -59,8 +67,10 @@ def main():
         
         print("\nVideo crawling completed!")
     
-    # Require user input Y/N to clean douban and video
-    user_input = input(f"Clean {book_name} from douban? (Y/N): ")
+    if auto:
+        user_input = "Y"
+    else:
+        user_input = input(f"Clean {book_name} from douban? (Y/N): ")
     if user_input.upper() in ["Y", "YES"]:
         print(f"Cleaning {book_name} from douban, please wait...")
         print("Cleaning in progress", end="", flush=True)
@@ -75,7 +85,10 @@ def main():
         
         print("\nDouban cleaning completed!")
     
-    user_input = input(f"Clean {book_name} from video? (Y/N): ")
+    if auto:
+        user_input = "Y"
+    else:
+        user_input = input(f"Clean {book_name} from video? (Y/N): ")
     if user_input.upper() in ["Y", "YES"]:
         print(f"Cleaning {book_name} from video, please wait...")
         print("Cleaning in progress", end="", flush=True)
@@ -90,7 +103,10 @@ def main():
         
         print("\nVideo cleaning completed!")
 
-    user_input = input(f"Parse {book_name} from douban? (Y/N): ")
+    if auto:
+        user_input = "Y"
+    else:
+        user_input = input(f"Parse {book_name} from douban? (Y/N): ")
     if user_input.upper() in ["Y", "YES"]:
         print(f"Parsing {book_name} from douban, please wait...")
         print("Parsing in progress", end="", flush=True)
@@ -105,7 +121,10 @@ def main():
         
         print("\nParsing completed!")
     
-    user_input = input(f"Generate report for {book_name}? (Y/N): ")
+    if auto:
+        user_input = "Y"
+    else:
+        user_input = input(f"Generate report for {book_name}? (Y/N): ")
     if user_input.upper() in ["Y", "YES"]:
         print(f"Generating report for {book_name}, please wait...")
         print("Report generation in progress", end="", flush=True)
