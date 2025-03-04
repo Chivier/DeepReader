@@ -1,11 +1,15 @@
+import time
 import douban_crawler
 import video_crawler
 import douban_cleaning
 import video_cleaning
-import parse_review
+from parse_review import parse_reviews
 import report
 
+import threading
+import os
 import argparse
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -20,26 +24,101 @@ def main():
     douban_count = args.douban
     video_url_file = args.video
     book_name = args.book
+   
+    # Require user input Y/N to crawl douban and video
+    user_input = input(f"Crawl {book_name} from douban? (Y/N): ")
+    if user_input.upper() in ["Y", "YES"]:
+        print(f"Starting to crawl {book_name} from douban, please wait...")
+        # Create a background animation while the spider is working
+        print("Spider is working", end="", flush=True)
+        douban_spider = douban_crawler.DoubanBookSpider()
+        # Start the crawling process
+        crawl_thread = threading.Thread(target=douban_spider.crawl_book, args=(book_name, douban_count))
+        crawl_thread.start()
+        
+        # Show animation while the thread is running
+        while crawl_thread.is_alive():
+            print(".", end="", flush=True)
+            time.sleep(0.5)
+        
+        print("\nCrawling completed!")
     
-    print(f"Crawling {book_name} from douban")
-    douban_spider = douban_crawler.DoubanBookSpider()
-    douban_spider.crawl_book(book_name, douban_count)
+    user_input = input(f"Crawl {book_name} from video? (Y/N): ")
+    if user_input.upper() in ["Y", "YES"]:
+        print(f"Starting to crawl {book_name} from video, please wait...")
+        print("Spider is working", end="", flush=True)
+        video_spider = video_crawler.VideoCrawler(book_name)
+        # Start the crawling process in a thread
+        crawl_thread = threading.Thread(target=video_spider.process_video_urls, args=(video_url_file,))
+        crawl_thread.start()
+        
+        # Show animation while the thread is running
+        while crawl_thread.is_alive():
+            print(".", end="", flush=True)
+            time.sleep(0.5)
+        
+        print("\nVideo crawling completed!")
     
-    print(f"Crawling {book_name} from video")
-    video_spider = video_crawler.VideoCrawler(book_name)
-    video_spider.process_video_urls(video_url_file)
+    # Require user input Y/N to clean douban and video
+    user_input = input(f"Clean {book_name} from douban? (Y/N): ")
+    if user_input.upper() in ["Y", "YES"]:
+        print(f"Cleaning {book_name} from douban, please wait...")
+        print("Cleaning in progress", end="", flush=True)
+        # Start the cleaning process in a thread
+        clean_thread = threading.Thread(target=douban_cleaning.clean_all_douban_files, args=(book_name + "/website",))
+        clean_thread.start()
+        
+        # Show animation while the thread is running
+        while clean_thread.is_alive():
+            print(".", end="", flush=True)
+            time.sleep(0.5)
+        
+        print("\nDouban cleaning completed!")
     
-    print(f"Cleaning {book_name} from douban")
-    douban_cleaning.clean_all_douban_files(book_name + "/website")
-    
-    print(f"Cleaning {book_name} from video")
-    video_cleaning.clean_all_video_files(book_name + "/video")
+    user_input = input(f"Clean {book_name} from video? (Y/N): ")
+    if user_input.upper() in ["Y", "YES"]:
+        print(f"Cleaning {book_name} from video, please wait...")
+        print("Cleaning in progress", end="", flush=True)
+        # Start the cleaning process in a thread
+        clean_thread = threading.Thread(target=video_cleaning.clean_all_video_files, args=(book_name + "/video",))
+        clean_thread.start()
+        
+        # Show animation while the thread is running
+        while clean_thread.is_alive():
+            print(".", end="", flush=True)
+            time.sleep(0.5)
+        
+        print("\nVideo cleaning completed!")
 
-    print(f"Parsing {book_name} from douban")
-    parse_review.parse_douban_reviews(book_name)
+    user_input = input(f"Parse {book_name} from douban? (Y/N): ")
+    if user_input.upper() in ["Y", "YES"]:
+        print(f"Parsing {book_name} from douban, please wait...")
+        print("Parsing in progress", end="", flush=True)
+        # Start the parsing process in a thread
+        parse_thread = threading.Thread(target=parse_reviews, args=(book_name,))
+        parse_thread.start()
+        
+        # Show animation while the thread is running
+        while parse_thread.is_alive():
+            print(".", end="", flush=True)
+            time.sleep(0.5)
+        
+        print("\nParsing completed!")
     
-    print(f"Generating report for {book_name}")
-    report.report_parser(book_name)
+    user_input = input(f"Generate report for {book_name}? (Y/N): ")
+    if user_input.upper() in ["Y", "YES"]:
+        print(f"Generating report for {book_name}, please wait...")
+        print("Report generation in progress", end="", flush=True)
+        # Start the report generation process in a thread
+        report_thread = threading.Thread(target=report.report_parser, args=(book_name,))
+        report_thread.start()
+        
+        # Show animation while the thread is running
+        while report_thread.is_alive():
+            print(".", end="", flush=True)
+            time.sleep(0.5)
+        
+        print("\nReport generation completed!")
 
 if __name__ == "__main__":
     main()

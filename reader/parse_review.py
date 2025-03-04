@@ -66,7 +66,7 @@ def review_parser(review_file):
 
 
 
-def parse_douban_reviews(book_path="example_book"):
+def parse_reviews(book_path="example_book"):
     douban_folder = os.path.join(book_path, "website")
     video_folder = os.path.join(book_path, "video")
     parsed_data = []
