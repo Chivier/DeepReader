@@ -332,3 +332,8 @@ video_link.txt
 华为工作法/*
 website/chat_history/*
 website/book_prompt/华为工作法.md
+website/book_prompt/仿生人会梦见电子羊吗.md
+website/book_prompt/未来简史.md
+website/book_prompt/纳瓦尔宝典.md
+.env.local
+website/book_prompt/*

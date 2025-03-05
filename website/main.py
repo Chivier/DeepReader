@@ -9,16 +9,20 @@ import random
 # API Configuration
 # ============================================================================
 # Using OpenRouter API to access deepseek-chat model
-openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+# openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+openai_api_key = os.getenv("OPENAI_API_KEY")
+openai_base_url = os.getenv("OPENAI_BASE_URL")
+model_name = os.getenv("DEEPREADER_MODEL_NAME")
+
 client = openai.OpenAI(
-    api_key=openrouter_api_key,
-    base_url="https://openrouter.ai/api/v1"
+    api_key=openai_api_key,
+    base_url=openai_base_url
 )
 
 def get_response(messages):
     """Get response from the LLM API"""
     completion = client.chat.completions.create(
-        model="deepseek/deepseek-chat",
+        model=model_name,
         messages=messages
     )
     return completion.choices[0].message.content
