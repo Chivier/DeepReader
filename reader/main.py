@@ -10,6 +10,15 @@ import threading
 import os
 import argparse
 
+def show_waiting_animation(thread):
+    dots = 0
+    while thread.is_alive():
+        print(".", end="", flush=True)
+        time.sleep(0.5)
+        dots += 1
+        if dots >= 6:
+            print("\r" + " " * 6 + "\r", end="", flush=True)
+            dots = 0
 
 def main():
     parser = argparse.ArgumentParser()
@@ -41,10 +50,7 @@ def main():
         crawl_thread = threading.Thread(target=douban_spider.crawl_book, args=(book_name, douban_count))
         crawl_thread.start()
         
-        # Show animation while the thread is running
-        while crawl_thread.is_alive():
-            print(".", end="", flush=True)
-            time.sleep(0.5)
+        show_waiting_animation(crawl_thread)
         
         print("\nCrawling completed!")
     
@@ -61,10 +67,8 @@ def main():
         crawl_thread.start()
         
         # Show animation while the thread is running
-        while crawl_thread.is_alive():
-            print(".", end="", flush=True)
-            time.sleep(0.5)
-        
+        show_waiting_animation(crawl_thread)
+                
         print("\nVideo crawling completed!")
     
     if auto:
@@ -79,9 +83,7 @@ def main():
         clean_thread.start()
         
         # Show animation while the thread is running
-        while clean_thread.is_alive():
-            print(".", end="", flush=True)
-            time.sleep(0.5)
+        show_waiting_animation(clean_thread)
         
         print("\nDouban cleaning completed!")
     
@@ -96,10 +98,7 @@ def main():
         clean_thread = threading.Thread(target=video_cleaning.clean_all_video_files, args=(book_name + "/video",))
         clean_thread.start()
         
-        # Show animation while the thread is running
-        while clean_thread.is_alive():
-            print(".", end="", flush=True)
-            time.sleep(0.5)
+        show_waiting_animation(clean_thread)
         
         print("\nVideo cleaning completed!")
 
@@ -115,9 +114,7 @@ def main():
         parse_thread.start()
         
         # Show animation while the thread is running
-        while parse_thread.is_alive():
-            print(".", end="", flush=True)
-            time.sleep(0.5)
+        show_waiting_animation(parse_thread)
         
         print("\nParsing completed!")
     
@@ -133,9 +130,7 @@ def main():
         report_thread.start()
         
         # Show animation while the thread is running
-        while report_thread.is_alive():
-            print(".", end="", flush=True)
-            time.sleep(0.5)
+        show_waiting_animation(report_thread)
         
         print("\nReport generation completed!")
 
