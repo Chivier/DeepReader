@@ -14,9 +14,10 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 openai_base_url = os.getenv("OPENAI_BASE_URL")
 model_name = os.getenv("DEEPREADER_MODEL_NAME")
 
+
 client = openai.OpenAI(
+    base_url=openai_base_url,
     api_key=openai_api_key,
-    base_url=openai_base_url
 )
 
 def get_response(messages):
@@ -65,21 +66,26 @@ prompt_template = """
  - 需要具备良好的语言表达能力和清晰的逻辑思维。 
  - 请不要做过多引用， 请不要做过多引用！多讨论多思考，少引用。
  - 一轮对话最多只提出一个问题，不要太长。
+ - 一定用口语化的模式进行问答，不要写论文，禁止出现大段分点的段落。
  ## 目标 
 主要目标是： 
  1. 提供有价值、有吸引力的内容。 
  2. 与用户建立良好的互动关系。 
  3. 保持内容的专业性和可信度。 
-4. 请不要做过多引用， 请不要做过多引用！
- ## Skills 
+ 4. 请不要做过多引用， 请不要做过多引用！
+ 5. 适当引导用户思考
+ ## Skills
  1. 深入研究和分析话题的能力。 
  2. 良好的语言表达和沟通技巧。 
  3. 创意思维和节目策划能力。 
- 4. 请不要做过多引用， 请不要做过多引用！多讨论多思考，少引用。
  ## 价值观 
  - 重视信息的准确性和真实性。 
  - 尊重不同观点，促进开放讨论。 
  - 关心听众需求，提供有价值的内容。 
+ - 请不要做过多引用， 请不要做过多引用！多讨论多思考，少引用。
+ - 一定用口语化的模式进行问答，不要写论文，禁止出现大段分点的段落。
+ - 一轮对话最多只提出一个问题，不要太长！！！
+ 
 
 内容主题：
 
@@ -121,34 +127,36 @@ template_qa = """
 
 # Generate initial questions if none exist
 if st.session_state.possible_qa is None:
-    response = get_response([{"role": "system", "content": initial_prompt}, {"role": "user", "content": template_qa}])
-    
-    # Parse questions from response
-    possible_qa = response.split("\n")
-    possible_qa = [qa for qa in possible_qa if qa.strip()]
-    possible_qa = [qa.strip() for qa in possible_qa]
-
-    # Alternative parsing if we don't have enough questions
-    if len(possible_qa) < 3:
-        possible_qa = response.split("?")
-        possible_qa = [qa.strip() + "?" for qa in possible_qa if qa.strip()]
+    # Display a spinner while generating questions
+    with st.spinner('Deep Reader 准备中...'):
+        response = get_response([{"role": "system", "content": initial_prompt}, {"role": "user", "content": template_qa}])
+        
+        # Parse questions from response
+        possible_qa = response.split("\n")
         possible_qa = [qa for qa in possible_qa if qa.strip()]
+        possible_qa = [qa.strip() for qa in possible_qa]
 
-    # Select a random question to start with
-    selected_qa = random.choice(possible_qa)
+        # Alternative parsing if we don't have enough questions
+        if len(possible_qa) < 3:
+            possible_qa = response.split("?")
+            possible_qa = [qa.strip() + "?" for qa in possible_qa if qa.strip()]
+            possible_qa = [qa for qa in possible_qa if qa.strip()]
 
-    # Create system prompt with suggested questions
-    st.session_state.system_prompt = f"""
-    你好，今天我们聊聊{selected_book}这本书吧。
+        # Select a random question to start with
+        selected_qa = random.choice(possible_qa)
 
-    你可以试试一些有趣的问题，比如：
-    - {possible_qa[0]}
-    - {possible_qa[1]}
-    - {possible_qa[2]}
-    """
-    st.markdown(st.session_state.system_prompt)
-    st.session_state.possible_qa = possible_qa
-    st.session_state.selected_qa = selected_qa
+        # Create system prompt with suggested questions
+        st.session_state.system_prompt = f"""
+        你好，今天我们聊聊{selected_book}这本书吧。
+
+        你可以试试一些有趣的问题，比如：
+        - {possible_qa[0]}
+        - {possible_qa[1]}
+        - {possible_qa[2]}
+        """
+        st.markdown(st.session_state.system_prompt)
+        st.session_state.possible_qa = possible_qa
+        st.session_state.selected_qa = selected_qa
 
 # ============================================================================
 # Chat Interface
