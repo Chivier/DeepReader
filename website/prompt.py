@@ -108,15 +108,63 @@ MBTI_INFO = [
 
 MBTI_INFO_DICT = dict(zip(MBTI_TYPE, MBTI_INFO))
 
-PREFERENCE_TYPE = [["理性中立", "邪恶中立"],
-                     ["强烈喜欢", "理性喜欢"],
-                     ["强烈不喜欢", "理性不喜欢"]]
+PREFERENCE_TYPE = [["理性中立，理性分析作品的有点和缺点", "邪恶中立，喜欢多开玩笑"],
+                     ["强烈喜欢，喜欢讨论作品的细节", "理性喜欢，不谈论细节，多讨论感受"],
+                     ["强烈不喜欢，不喜论作品的一切", "理性不喜欢，多讨论感受"]]
 PREFERENCE_NAME = [["理中客", "乐子人"],
                      ["真爱粉", "理性粉"],
                      ["小黑子", "理性黑"]]
 PREFERENCE_EMOJI = [["🤔", "😈"],
-                     ["😍", "🤔"],
+                     ["😍", "😄"],
                      ["🤢", "😖"]]
+PREFERENCE_TUNE = [
+    # 中立
+    [
+    [
+        "这本书其实优点和缺点都很明显",
+        "我是一个理性中立的人，我喜欢讨论作品的细节，不喜欢讨论感受。",
+        "大杂烩，也许华为正是集各家多长吧。道理都明白，还是要看切实执行。",
+        "道理大而全，读起来说不上哪里不对劲，就是觉得不对劲，说有收获吧，好像没啥收获，说没收获吧，又感觉有点东西。"
+    ],
+    [
+        "这本书的优点和缺点都很明显",
+        "确实非常推特风，观点很有利于传播，但也正因为这种极易传播也使得书的内容很散 内容很多是值得深省的，值得一读",
+        "这本书就像一碗附赠汤匙和菜谱的鸡汤，想喝就喝，觉得好喝就学。",
+        "停止追问，开始欣赏。嘻嘻。"
+    ]
+    ], 
+    # 喜欢
+    [
+    [
+        "这本书我超爱！从个人角度上来说我非常喜欢！",
+        "相信我，把这本书的第1页领悟到，你将超过世界上99%的人！",
+        "很不错的一本书，论述简单明了，有很多引人深思的观点，也有很多新的认知。会反复观看，带着辩证性思维来思考书中的观点，将一些可行的建议慢慢付诸行动。"
+    ], 
+    [
+        "这本书挺好的，读起来很有道理。",
+        "感觉没有预期那么受益匪浅 有些观点还是挺有用的 这本书越早看越好 不然其实很多人生经历都会告诉你此书中的观点 只不过有时候看了没有实际经历还是很难彻底了悟其中的道理",
+        "非常推荐。人生短暂 早点行动 要想少干傻事 看点聪明人的手记准没错：）这本就是"
+    ]
+    ],
+    # 不喜欢
+    [
+    # 强烈不喜欢
+    [
+        "这本书太垃圾了",
+        "实在他妈受不了了，毫无文笔可言。",
+        "虽然科幻最大的弊病之一就是文笔差，但至少做到自然流畅吧，看着这生硬的文字配上这无趣的剧情实在是种折磨。",
+        "什么主题都没有，什么都没表达 我评价是不如看特摄写人外:)",
+        "心灵鸡汤，后悔买，把读者当傻子。"
+    ],
+    # 理性不喜欢
+    [
+        "这本书我其实并不是很喜欢",
+        "充斥着荒诞的矛盾，并以种种骗局一层层模糊存在与真实的界限。本身比较枯燥，许多梗都是隐藏暗示的。",
+        "一直想看的经典，看完也只是so so，一个时代的经典换一个时代显得很落后了",
+        "没有太多共鸣。总的感觉比较飘忽。读的时候比较难理解到设定，或者说，缺少提前介绍里面的设定，所以一边看一边去理解，比较吃力，也就不理解里面的各种表现。"
+    ],
+    ]
+]
 
 STYLES = ["严肃", "轻松", "幽默", "抽象混沌"]
 
@@ -149,7 +197,7 @@ prompt_template = """
 - 请不要做过多引用， 请不要做过多引用！多讨论多思考，少引用。
 - 不要写论文，严格禁止出现分点的段落和 markdown 标题。
 - 一定用口语化的模式进行问答。尽量不要提问，多讨论多思考。
-- 坚持自己的看法。
+- 坚持自己的看法。允许适当回怼。
 - 说 3-5 句话，不要超过 5 句话。偶尔提问。
  
 好了，现在你是一个 {preference_type} 这本书的人，下面请和我聊聊《{book_name}》这本书吧。
@@ -199,9 +247,10 @@ def three_person_generation(book_name, book_prompt):
         preference_type = PREFERENCE_TYPE[person_id][attitude_bit]
         preference_name = PREFERENCE_NAME[person_id][attitude_bit]
         emoji = PREFERENCE_EMOJI[person_id][attitude_bit]
+        style_guide = PREFERENCE_TUNE[person_id][attitude_bit]
         
         prompt = prompt_template.format(mbti_type=mbti_types[person_id], mbti_info=MBTI_INFO_DICT[mbti_types[person_id]], preference_type=preference_type, book_name=book_name)
-        prompts.append({"emoji": emoji, "preference_name": preference_name, "prompt": prompt})
+        prompts.append({"emoji": emoji, "preference_type": preference_type, "preference_name": preference_name, "prompt": prompt, "style_guide": style_guide})
         person_id += 1
     
     book_prompt = book_prompt_template.format(book_name=book_name, book_prompt=book_prompt)
@@ -295,3 +344,71 @@ def get_card_system_prompt(selected_book, book_prompt):
         (print"请提供产品所属领域及产品名称(领域 产品)，我将为您生成一个深层的、能触动人心的情绪价值营销语句。")))
     """
     return card_system_prompt
+
+def style_prompt(style_guide, preference_type, preference_name, text_original=""):
+    """
+    Generate a prompt for the card model
+    """
+    strength = 0
+    if preference_name == "理中客" or preference_name == "理性粉" or preference_name == "理性黑":
+        strength = 1
+    if strength == 1:
+        background = "我是一个专门用于将用户表达转换为理性、客观、中立语气的工具，擅长保持原意的同时调整表达方式，使其更加客观冷静。"
+        preference = "不需要注重逻辑性和分析性，避免情感化和主观色彩浓厚的语言。"
+        goals = "将表达转换为理性、客观、中立的语气"
+    else:
+        background = "我是一个专门用于将用户表达转换为感性、情绪化语气的工具，擅长保持原意的同时调整表达方式，使其更加主观激进。"
+        preference = "需要注重逻辑性和分析性，避免情感化和主观色彩浓厚的语言。"
+        goals = "将表达转换为情绪化、主观、表达强烈情绪的语气"
+    
+    style_guide_original = style_guide[0]
+    style_guide_converted = ""
+    for i in range(1, len(style_guide)):
+        style_guide_converted += "转换后参考" + str(i) + " ： " + style_guide[i] + "\n"
+    
+    system_prompt = f"""
+## Role:
+聊天转换器
+
+## Background:
+{background}
+
+## Preferences:
+{preference}
+
+## Profile:
+- language: 中文
+- description: 将用户输入转换表达方式，保留原意但改变语气
+
+## Goals:
+你的立场是{preference_type}
+保持用户原始信息的完整性和核心意思
+{goals}
+提供清晰、逻辑性强的表达
+
+## Constrains:
+不得增加或删减用户输入的实质内容
+不得插入个人观点或评价
+严格遵循用户提供的参考语气样例
+
+## Skills:
+精准识别文本核心信息的能力
+语气转换和文本重构能力
+保持语义一致性的能力
+
+## Examples:
+原文：{style_guide_original}
+{style_guide_converted}
+
+## OutputFormat:
+1. 分析用户输入的核心信息和情感倾向
+2. 根据参考语气样例进行语气转换
+3. 尽力保持原始信息的完整性
+4. 不要超过3句话
+
+## Initialization:
+{"作为对话，要和上一句话衔接连贯，不要突兀。刚刚对话的上下文是：" + text_original + "。" if text_original != "" else ""}
+
+拥有精准识别文本信息、语气转换和保持语义一致性的能力，尽力遵守不增改内容、不插入个人观点的限制条件，使用默认中文与用户对话。保留原意。请提供您需要转换的文本。
+"""
+    return system_prompt

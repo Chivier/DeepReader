@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 import random
 
-from prompt import get_response, three_person_generation, get_card_system_prompt, get_client
+from prompt import get_response, three_person_generation, get_card_system_prompt, get_client, style_prompt
 
 # Initialize session state variables
 if "messages" not in st.session_state:
@@ -37,6 +37,7 @@ if "previous_book" not in st.session_state:
     st.session_state.previous_book = selected_book
     st.session_state.system_prompt = None
     st.session_state.book_prompt = book_prompt
+    st.session_state.last_response = None
 elif st.session_state.previous_book != selected_book:
     st.session_state.messages = []
     st.session_state.message1 = []
@@ -45,6 +46,7 @@ elif st.session_state.previous_book != selected_book:
     st.session_state.previous_book = selected_book
     st.session_state.book_prompt = book_prompt
     st.session_state.system_prompt = None
+    st.session_state.last_response = None
     st.rerun()
 
 st.title(f"深读 - {selected_book}")
@@ -79,6 +81,7 @@ def generate_card(selected_book, book_prompt):
 # ============================================================================
 datetime_tag = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 client = get_client()
+style_client = get_client()
 
 # ============================================================================
 # Chat History Initialization
@@ -114,21 +117,28 @@ if st.button("开始深读", key="start_reading"):
         response2 = get_response(client, st.session_state.message2)
         response3 = get_response(client, st.session_state.message3)
         
+        style_response1 = style_prompt(st.session_state.initial_prompt1["style_guide"], st.session_state.initial_prompt1["preference_type"], st.session_state.initial_prompt1["preference_name"], "")
+        response1 = get_response(style_client, [{"role": "system", "content": style_response1}, {"role": "user", "content": response1}])
         st.session_state.messages.append({"role": "assistant1", "content": response1})
-        st.session_state.messages.append({"role": "assistant2", "content": response2})
-        st.session_state.messages.append({"role": "assistant3", "content": response3})
-
         st.session_state.message1.append({"role": "assistant", "content": response1})
-        st.session_state.message1.append({"role": "user", "content": response2})
-        st.session_state.message1.append({"role": "user", "content": response3})
-
         st.session_state.message2.append({"role": "user", "content": response1})
-        st.session_state.message2.append({"role": "assistant", "content": response2})
-        st.session_state.message2.append({"role": "user", "content": response3})
-
         st.session_state.message3.append({"role": "user", "content": response1})
+        
+        style_response2 = style_prompt(st.session_state.initial_prompt2["style_guide"], st.session_state.initial_prompt2["preference_type"], st.session_state.initial_prompt2["preference_name"], response1)
+        response2 = get_response(style_client, [{"role": "system", "content": style_response2}, {"role": "user", "content": response2}])
+        st.session_state.messages.append({"role": "assistant2", "content": response2})
+        st.session_state.message1.append({"role": "user", "content": response2})
+        st.session_state.message2.append({"role": "assistant", "content": response2})
         st.session_state.message3.append({"role": "user", "content": response2})
+        
+        style_response3 = style_prompt(st.session_state.initial_prompt3["style_guide"], st.session_state.initial_prompt3["preference_type"], st.session_state.initial_prompt3["preference_name"], response2)
+        response3 = get_response(style_client, [{"role": "system", "content": style_response3}, {"role": "user", "content": response3}])
+        st.session_state.messages.append({"role": "assistant3", "content": response3})
+        st.session_state.message1.append({"role": "user", "content": response3})
+        st.session_state.message2.append({"role": "user", "content": response3})
         st.session_state.message3.append({"role": "assistant", "content": response3})
+        
+        st.session_state.last_response = response3
     
 
 # if st.session_state.system_prompt:
@@ -223,24 +233,30 @@ if prompt := st.chat_input():
         for i in response_order:
             if i == 1:
                 response = get_response(client, st.session_state.message1)
+                style_response = style_prompt(st.session_state.initial_prompt1["style_guide"], st.session_state.initial_prompt1["preference_type"], st.session_state.initial_prompt1["preference_name"], st.session_state.last_response)
+                response = get_response(style_client, [{"role": "system", "content": style_response}, {"role": "user", "content": response}])
                 # response = f"{emoji} {name}：" + response
                 st.session_state.messages.append({"role": "assistant1", "content": response})
                 st.session_state.message1.append({"role": "assistant", "content": response})
-                st.session_state.message2.append({"role": "user", "content": response})
-                st.session_state.message3.append({"role": "user", "content": response})
+                st.session_state.message2.append({"role": "assistant1", "content": response})
+                st.session_state.message3.append({"role": "assistant1", "content": response})
             elif i == 2:
                 response = get_response(client, st.session_state.message2)
+                style_response = style_prompt(st.session_state.initial_prompt2["style_guide"], st.session_state.initial_prompt2["preference_type"], st.session_state.initial_prompt2["preference_name"], st.session_state.last_response)
+                response = get_response(style_client, [{"role": "system", "content": style_response}, {"role": "user", "content": response}])
                 # response = f"{emoji} {name}：" + response
                 st.session_state.messages.append({"role": "assistant2", "content": response})
-                st.session_state.message1.append({"role": "user", "content": response})
+                st.session_state.message1.append({"role": "assistant2", "content": response})
                 st.session_state.message2.append({"role": "assistant", "content": response})
-                st.session_state.message3.append({"role": "user", "content": response})
+                st.session_state.message3.append({"role": "assistant2", "content": response})
             else:
                 response = get_response(client, st.session_state.message3)
+                style_response = style_prompt(st.session_state.initial_prompt3["style_guide"], st.session_state.initial_prompt3["preference_type"], st.session_state.initial_prompt3["preference_name"], st.session_state.last_response)
+                response = get_response(style_client, [{"role": "system", "content": style_response}, {"role": "user", "content": response}])
                 # response = f"{emoji} {name}：" + response
                 st.session_state.messages.append({"role": "assistant3", "content": response})
-                st.session_state.message1.append({"role": "user", "content": response})
-                st.session_state.message2.append({"role": "user", "content": response})
+                st.session_state.message1.append({"role": "assistant3", "content": response})
+                st.session_state.message2.append({"role": "assistant3", "content": response})
                 st.session_state.message3.append({"role": "assistant", "content": response})
             
     emoji1 = st.session_state.initial_prompt1["emoji"]
