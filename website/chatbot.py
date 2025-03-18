@@ -3,9 +3,11 @@ import openai
 import os
 import json
 from datetime import datetime
+import numpy as np
+import pandas as pd
 import random
 
-from prompt import get_response, three_person_generation, get_card_system_prompt, get_client, style_prompt
+from prompt import get_response, three_person_generation, get_card_system_prompt, get_client, style_prompt, get_embedding
 
 # Initialize session state variables
 if "messages" not in st.session_state:
@@ -296,4 +298,31 @@ if prompt := st.chat_input():
 #         if st.button("确定"):
 #             summary = generate_card(selected_book, book_prompt)
 #             st.markdown(summary)
-            
+
+# def read_csv_file(file_path):
+#     df = pd.read_csv(file_path)
+#     return df
+
+# def read_similar_points_of_view(df_table: pd.DataFrame, sentence: str, k: int = 5):
+#     # columns: source,source_url,story,feeling,evaluation,thinking
+#     # ignore source,source_url,story
+#     # find the most similar points of view
+#     # return the top k most similar points of view
+#     # use the feeling and evaluation to find the most similar points of view
+#     # use the thinking to find the most similar points of view
+#     views = []
+#     for index, row in df_table.iterrows():
+#         if row["feeling"] == sentence:
+#             views.append(row["evaluation"])
+#         if row["thinking"] == sentence:
+#             views.append(row["evaluation"])
+#     # return the top k most similar points of view
+#     sentence_embedding = get_embedding(sentence)
+#     views_embedding = []
+#     for view in views:
+#         views_embedding.append(get_embedding(view))
+#     # calculate the cosine similarity
+#     similarity = np.dot(sentence_embedding, views_embedding)
+#     # get indices of top k similarities
+#     top_k_indices = similarity.argsort()[-k:][::-1]
+#     return [views[i] for i in top_k_indices]

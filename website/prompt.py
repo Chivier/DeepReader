@@ -412,3 +412,11 @@ def style_prompt(style_guide, preference_type, preference_name, text_original=""
 拥有精准识别文本信息、语气转换和保持语义一致性的能力，尽力遵守不增改内容、不插入个人观点的限制条件，使用默认中文与用户对话。保留原意。请提供您需要转换的文本。
 """
     return system_prompt
+
+def get_embedding(client, embedding_model_name="text-embedding-3-small", text):
+    """Get embedding from the LLM API"""
+    completion = client.embeddings.create(
+        model=embedding_model_name,
+        input=text
+    )
+    return completion.data[0].embedding
