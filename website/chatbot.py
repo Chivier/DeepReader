@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import random
 
-from prompt import get_response, three_person_generation, get_card_system_prompt, get_client, style_prompt, get_embedding
+from prompt import get_response, three_person_generation, get_card_system_prompt, get_client, style_prompt, get_embedding, message_rephrase
 
 # Initialize session state variables
 if "messages" not in st.session_state:
@@ -119,7 +119,7 @@ if st.button("开始深读", key="start_reading"):
         response2 = get_response(client, st.session_state.message2)
         response3 = get_response(client, st.session_state.message3)
         
-        style_response1 = style_prompt(st.session_state.initial_prompt1["style_guide"], st.session_state.initial_prompt1["preference_type"], st.session_state.initial_prompt1["preference_name"], "")
+        style_response1 = style_prompt(st.session_state.initial_prompt1["style_guide"], st.session_state.initial_prompt1["preference_type"], st.session_state.initial_prompt1["preference_name"], "你好，今天我们聊聊" + selected_book + "这本书吧。")
         response1 = get_response(style_client, [{"role": "system", "content": style_response1}, {"role": "user", "content": response1}])
         st.session_state.messages.append({"role": "assistant1", "content": response1})
         st.session_state.message1.append({"role": "assistant", "content": response1})
@@ -228,56 +228,94 @@ if prompt := st.chat_input():
     st.session_state.message3.append({"role": "user", "content": prompt})
     
     # Display a spinner while waiting for the response
+    responses = []
     with st.spinner('思考中...'):
+        emoji1 = st.session_state.initial_prompt1["emoji"]
+        name1 = st.session_state.initial_prompt1["preference_name"]
+        emoji2 = st.session_state.initial_prompt2["emoji"]
+        name2 = st.session_state.initial_prompt2["preference_name"]
+        emoji3 = st.session_state.initial_prompt3["emoji"]
+        name3 = st.session_state.initial_prompt3["preference_name"]
         # random response order
         response_order = [1, 2, 3]
         random.shuffle(response_order)
+        st.session_state.last_response = prompt
         for i in response_order:
             if i == 1:
                 response = get_response(client, st.session_state.message1)
                 style_response = style_prompt(st.session_state.initial_prompt1["style_guide"], st.session_state.initial_prompt1["preference_type"], st.session_state.initial_prompt1["preference_name"], st.session_state.last_response)
                 response = get_response(style_client, [{"role": "system", "content": style_response}, {"role": "user", "content": response}])
+                st.session_state.last_response = response
+                responses.append((name1, emoji1, response))
                 # response = f"{emoji} {name}：" + response
-                st.session_state.messages.append({"role": "assistant1", "content": response})
-                st.session_state.message1.append({"role": "assistant", "content": response})
-                st.session_state.message2.append({"role": "assistant1", "content": response})
-                st.session_state.message3.append({"role": "assistant1", "content": response})
+                # st.session_state.messages.append({"role": "assistant1", "content": response})
+                # st.session_state.message1.append({"role": "assistant", "content": response})
+                # st.session_state.message2.append({"role": "assistant1", "content": response})
+                # st.session_state.message3.append({"role": "assistant1", "content": response})
             elif i == 2:
                 response = get_response(client, st.session_state.message2)
                 style_response = style_prompt(st.session_state.initial_prompt2["style_guide"], st.session_state.initial_prompt2["preference_type"], st.session_state.initial_prompt2["preference_name"], st.session_state.last_response)
                 response = get_response(style_client, [{"role": "system", "content": style_response}, {"role": "user", "content": response}])
+                st.session_state.last_response = response
+                responses.append((name2, emoji2, response))
                 # response = f"{emoji} {name}：" + response
-                st.session_state.messages.append({"role": "assistant2", "content": response})
-                st.session_state.message1.append({"role": "assistant2", "content": response})
-                st.session_state.message2.append({"role": "assistant", "content": response})
-                st.session_state.message3.append({"role": "assistant2", "content": response})
+                # st.session_state.messages.append({"role": "assistant2", "content": response})
+                # st.session_state.message1.append({"role": "assistant2", "content": response})
+                # st.session_state.message2.append({"role": "assistant", "content": response})
+                # st.session_state.message3.append({"role": "assistant2", "content": response})
             else:
                 response = get_response(client, st.session_state.message3)
                 style_response = style_prompt(st.session_state.initial_prompt3["style_guide"], st.session_state.initial_prompt3["preference_type"], st.session_state.initial_prompt3["preference_name"], st.session_state.last_response)
                 response = get_response(style_client, [{"role": "system", "content": style_response}, {"role": "user", "content": response}])
+                st.session_state.last_response = response
+                responses.append((name3, emoji3, response))
                 # response = f"{emoji} {name}：" + response
-                st.session_state.messages.append({"role": "assistant3", "content": response})
-                st.session_state.message1.append({"role": "assistant3", "content": response})
-                st.session_state.message2.append({"role": "assistant3", "content": response})
-                st.session_state.message3.append({"role": "assistant", "content": response})
+                # st.session_state.messages.append({"role": "assistant3", "content": response})
+                # st.session_state.message1.append({"role": "assistant3", "content": response})
+                # st.session_state.message2.append({"role": "assistant3", "content": response})
+                # st.session_state.message3.append({"role": "assistant", "content": response})
             
-    emoji1 = st.session_state.initial_prompt1["emoji"]
-    name1 = st.session_state.initial_prompt1["preference_name"]
-    emoji2 = st.session_state.initial_prompt2["emoji"]
-    name2 = st.session_state.initial_prompt2["preference_name"]
-    emoji3 = st.session_state.initial_prompt3["emoji"]
-    name3 = st.session_state.initial_prompt3["preference_name"]
-    for i in range(-3, 0):
-        role = st.session_state.messages[i]["role"]
-        if role == "assistant1":
+
+    combined_message = ""
+    for response in responses:
+        combined_message += response[0] + "：" + response[2] + "\n"
+    combined_message = message_rephrase(style_client, combined_message, name1, name2, name3)
+    print(combined_message)
+    for message in combined_message:
+        if name1+"：" in message or name1+":" in message:
+            st.session_state.messages.append({"role": "assistant1", "content": message})
+            st.session_state.message1.append({"role": "assistant", "content": message})
+            st.session_state.message2.append({"role": "assistant1", "content": message})
+            st.session_state.message3.append({"role": "assistant1", "content": message})
             with st.chat_message(emoji1):
-                st.markdown(name1 + "：" + st.session_state.messages[i]["content"])
-        elif role == "assistant2":
+                st.markdown(message)
+        elif name2+"：" in message or name2+":" in message:
+            st.session_state.messages.append({"role": "assistant2", "content": message})
+            st.session_state.message1.append({"role": "assistant2", "content": message})
+            st.session_state.message2.append({"role": "assistant", "content": message})
+            st.session_state.message3.append({"role": "assistant2", "content": message})
             with st.chat_message(emoji2):
-                st.markdown(name2 + "：" + st.session_state.messages[i]["content"])
-        elif role == "assistant3":
+                st.markdown(message)
+        elif name3+"：" in message or name3+":" in message:
+            st.session_state.messages.append({"role": "assistant3", "content": message})
+            st.session_state.message1.append({"role": "assistant3", "content": message})
+            st.session_state.message2.append({"role": "assistant3", "content": message})
+            st.session_state.message3.append({"role": "assistant", "content": message})
             with st.chat_message(emoji3):
-                st.markdown(name3 + "：" + st.session_state.messages[i]["content"])
+                st.markdown(message)
+    
+    
+    # for i in range(-3, 0):
+    #     role = st.session_state.messages[i]["role"]
+    #     if role == "assistant1":
+    #         with st.chat_message(emoji1):
+    #             st.markdown(name1 + "：" + st.session_state.messages[i]["content"])
+    #     elif role == "assistant2":
+    #         with st.chat_message(emoji2):
+    #             st.markdown(name2 + "：" + st.session_state.messages[i]["content"])
+    #     elif role == "assistant3":
+    #         with st.chat_message(emoji3):
+    #             st.markdown(name3 + "：" + st.session_state.messages[i]["content"])
 
     
     # # Save chat history (commented out)

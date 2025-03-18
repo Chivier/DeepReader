@@ -121,8 +121,8 @@ PREFERENCE_TUNE = [
     # 中立
     [
     [
-        "这本书其实优点和缺点都很明显",
         "我是一个理性中立的人，我喜欢讨论作品的细节，不喜欢讨论感受。",
+        "这本书其实优点和缺点都很明显",
         "大杂烩，也许华为正是集各家多长吧。道理都明白，还是要看切实执行。",
         "道理大而全，读起来说不上哪里不对劲，就是觉得不对劲，说有收获吧，好像没啥收获，说没收获吧，又感觉有点东西。"
     ],
@@ -137,13 +137,11 @@ PREFERENCE_TUNE = [
     [
     [
         "这本书我超爱！从个人角度上来说我非常喜欢！",
-        "相信我，把这本书的第1页领悟到，你将超过世界上99%的人！",
         "很不错的一本书，论述简单明了，有很多引人深思的观点，也有很多新的认知。会反复观看，带着辩证性思维来思考书中的观点，将一些可行的建议慢慢付诸行动。"
     ], 
     [
         "这本书挺好的，读起来很有道理。",
         "感觉没有预期那么受益匪浅 有些观点还是挺有用的 这本书越早看越好 不然其实很多人生经历都会告诉你此书中的观点 只不过有时候看了没有实际经历还是很难彻底了悟其中的道理",
-        "非常推荐。人生短暂 早点行动 要想少干傻事 看点聪明人的手记准没错：）这本就是"
     ]
     ],
     # 不喜欢
@@ -361,10 +359,14 @@ def style_prompt(style_guide, preference_type, preference_name, text_original=""
         preference = "需要注重逻辑性和分析性，避免情感化和主观色彩浓厚的语言。"
         goals = "将表达转换为情绪化、主观、表达强烈情绪的语气"
     
-    style_guide_original = style_guide[0]
-    style_guide_converted = ""
-    for i in range(1, len(style_guide)):
-        style_guide_converted += "转换后参考" + str(i) + " ： " + style_guide[i] + "\n"
+    examples = ""
+    for i in range(0, len(style_guide) - 1, 2):
+        examples += "原文：" + style_guide[i] + "\n"
+        examples += "转换后：" + style_guide[i + 1] + "\n"
+    if text_original == "" or text_original == []:
+        initialization = ""
+    else:
+        initialization = "作为对话，要和上一句话衔接连贯，不要突兀。刚刚对话的上下文是：" + text_original + "。"
     
     system_prompt = f"""
 ## Role:
@@ -397,8 +399,7 @@ def style_prompt(style_guide, preference_type, preference_name, text_original=""
 保持语义一致性的能力
 
 ## Examples:
-原文：{style_guide_original}
-{style_guide_converted}
+{examples}
 
 ## OutputFormat:
 1. 分析用户输入的核心信息和情感倾向
@@ -407,16 +408,37 @@ def style_prompt(style_guide, preference_type, preference_name, text_original=""
 4. 不要超过3句话
 
 ## Initialization:
-{"作为对话，要和上一句话衔接连贯，不要突兀。刚刚对话的上下文是：" + text_original + "。" if text_original != "" else ""}
+{initialization}
 
 拥有精准识别文本信息、语气转换和保持语义一致性的能力，尽力遵守不增改内容、不插入个人观点的限制条件，使用默认中文与用户对话。保留原意。请提供您需要转换的文本。
 """
     return system_prompt
 
-def get_embedding(client, embedding_model_name="text-embedding-3-small", text):
+def get_embedding(client, embedding_model_name="text-embedding-3-small", text=""):
     """Get embedding from the LLM API"""
     completion = client.embeddings.create(
         model=embedding_model_name,
         input=text
     )
     return completion.data[0].embedding
+
+def message_rephrase(client, messages, name1, name2, name3):
+    """Rephrase the message"""
+    system_prompt = """
+    这边有三个人的观点，请将这三个人的观点，结合他们的语言特色，转写成聊天群里的信息。
+    可以改写这几个人的多轮对话，多轮次的时候这三个人的说话顺序可以随机。但是尽量每条消息不要超过3-4句，保持聊天风格。
+    尽量不要丢失信息。直接输出改写结果。
+
+格式例子：
+{name1}：xxx
+{name2}：xxx
+{name3}：xxx
+{name3}：xxx
+{name2}：xxx
+{name3}：xxx
+    """
+    completion = client.chat.completions.create(
+        model=model_name,
+        messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": messages}]
+    )
+    return completion.choices[0].message.content.split("\n")
