@@ -6,6 +6,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import random
+import page2
 
 from prompt import get_response, three_person_generation, get_card_system_prompt, get_client, style_prompt, get_embedding, message_rephrase
 
@@ -364,3 +365,12 @@ if prompt := st.chat_input():
 #     # get indices of top k similarities
 #     top_k_indices = similarity.argsort()[-k:][::-1]
 #     return [views[i] for i in top_k_indices]
+
+# Add page selection
+page = st.sidebar.selectbox("选择页面", ["深读对话", "深读笔记"])
+
+if page == "深读对话":
+    # Your existing chatbot code
+    pass
+elif page == "深读笔记":
+    page2.show_page2()
