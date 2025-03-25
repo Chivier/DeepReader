@@ -5,7 +5,7 @@ from urllib.parse import urlparse, parse_qs
 
 class VideoCrawler:
     def __init__(self, output_dir):
-        """Initialize VideoCrawler with book name"""
+        """Initialize VideoCrawler with output directory"""
         self.output_dir = output_dir
         self.base_dir = f"{output_dir}/video"
         os.makedirs(self.base_dir, exist_ok=True)
@@ -35,33 +35,56 @@ class VideoCrawler:
         # Remove .mp3 extension to avoid double extension
         temp_video_path = output_path.rsplit('.', 1)[0]
         
-        # Configure options to download video and extract audio in one go
-        ydl_opts = {
-            'format': 'mp4' if 'bilibili.com' in url else 'mp4',
-            'outtmpl': temp_video_path,
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-        }
-        
-        try:
-            # Download video and extract audio
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
+        if 'bilibili.com' in url:
+            # Use lux for bilibili downloads
+            try:
+                import subprocess
+                cmd = ['lux', '-o', f"{temp_video_path}.mp4", url]
+                subprocess.run(cmd, check=True)
+                
+                # Convert to mp3 using ffmpeg
+                mp3_path = f"{temp_video_path}.mp3"
+                subprocess.run([
+                    'ffmpeg', '-i', f"{temp_video_path}.mp4",
+                    '-vn', '-acodec', 'libmp3lame', '-q:a', '2',
+                    mp3_path
+                ], check=True)
+                
+                # Clean up the video file
+                if os.path.exists(f"{temp_video_path}.mp4"):
+                    os.remove(f"{temp_video_path}.mp4")
+                
+                return True
+            except Exception as e:
+                print(f"Error downloading/converting audio: {e}")
+                if os.path.exists(f"{temp_video_path}.mp4"):
+                    os.remove(f"{temp_video_path}.mp4")
+                return False
+        else:
+            # Use yt-dlp for other sources
+            ydl_opts = {
+                'format': 'mp4',
+                'outtmpl': temp_video_path,
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+            }
             
-            # Clean up the video file
-            if os.path.exists(temp_video_path):
-                os.remove(temp_video_path)
-            
-            return True
-        except Exception as e:
-            print(f"Error downloading/converting audio: {e}")
-            # Clean up any partial downloads
-            if os.path.exists(temp_video_path):
-                os.remove(temp_video_path)
-            return False
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([url])
+                
+                if os.path.exists(temp_video_path):
+                    os.remove(temp_video_path)
+                
+                return True
+            except Exception as e:
+                print(f"Error downloading/converting audio: {e}")
+                if os.path.exists(temp_video_path):
+                    os.remove(temp_video_path)
+                return False
 
     def transcribe_audio(self, audio_path):
         """Transcribe audio using Whisper model"""
@@ -123,10 +146,5 @@ class VideoCrawler:
 # Example usage
 if __name__ == "__main__":
     output_dir = "example_book"
-    # video_urls = [
-    #     # "https://www.youtube.com/watch?v=Ru0keaEM5qM",
-    #     "https://www.bilibili.com/video/BV1V7BbYBEFV"
-    # ]
-    
     crawler = VideoCrawler(output_dir)
     crawler.process_video_urls("video_link.txt")

@@ -37,23 +37,9 @@ def main():
     book_name = args.book
     auto = args.auto
     
-    if auto:
-        user_input = "Y"
-    else:
-        user_input = input(f"Crawl {book_name} from douban? (Y/N): ")
-    if user_input.upper() in ["Y", "YES"]:
-        print(f"Starting to crawl {book_name} from douban, please wait...")
-        # Create a background animation while the spider is working
-        print("Spider is working", end="", flush=True)
-        douban_spider = douban_crawler.DoubanBookSpider()
-        # Start the crawling process
-        crawl_thread = threading.Thread(target=douban_spider.crawl_book, args=(book_name, douban_count))
-        crawl_thread.start()
-        
-        show_waiting_animation(crawl_thread)
-        
-        print("\nCrawling completed!")
-    
+    # -----------------------------------------------------
+    # Crawl video
+    # -----------------------------------------------------
     if auto:
         user_input = "Y"
     else:
@@ -71,6 +57,47 @@ def main():
                 
         print("\nVideo crawling completed!")
     
+    # -----------------------------------------------------
+    # Clean video
+    # -----------------------------------------------------
+    if auto:
+        user_input = "Y"
+    else:
+        user_input = input(f"Clean {book_name} from video? (Y/N): ")
+    if user_input.upper() in ["Y", "YES"]:
+        print(f"Cleaning {book_name} from video, please wait...")
+        print("Cleaning in progress", end="", flush=True)
+        # Start the cleaning process in a thread
+        clean_thread = threading.Thread(target=video_cleaning.clean_all_video_files, args=(book_name + "/video",))
+        clean_thread.start()
+        
+        show_waiting_animation(clean_thread)
+        
+        print("\nVideo cleaning completed!")
+    
+    # -----------------------------------------------------
+    # Crawl douban
+    # -----------------------------------------------------
+    if auto:
+        user_input = "Y"
+    else:
+        user_input = input(f"Crawl {book_name} from douban? (Y/N): ")
+    if user_input.upper() in ["Y", "YES"]:
+        print(f"Starting to crawl {book_name} from douban, please wait...")
+        # Create a background animation while the spider is working
+        print("Spider is working", end="", flush=True)
+        douban_spider = douban_crawler.DoubanBookSpider()
+        # Start the crawling process
+        crawl_thread = threading.Thread(target=douban_spider.crawl_book, args=(book_name, douban_count))
+        crawl_thread.start()
+        
+        show_waiting_animation(crawl_thread)
+        
+        print("\nCrawling completed!")
+    
+    # -----------------------------------------------------
+    # Clean douban
+    # -----------------------------------------------------
     if auto:
         user_input = "Y"
     else:
@@ -87,27 +114,15 @@ def main():
         
         print("\nDouban cleaning completed!")
     
+    # -----------------------------------------------------
+    # Parse reviews
+    # -----------------------------------------------------
     if auto:
         user_input = "Y"
     else:
-        user_input = input(f"Clean {book_name} from video? (Y/N): ")
+        user_input = input(f"Parse {book_name} reviews? (Y/N): ")
     if user_input.upper() in ["Y", "YES"]:
-        print(f"Cleaning {book_name} from video, please wait...")
-        print("Cleaning in progress", end="", flush=True)
-        # Start the cleaning process in a thread
-        clean_thread = threading.Thread(target=video_cleaning.clean_all_video_files, args=(book_name + "/video",))
-        clean_thread.start()
-        
-        show_waiting_animation(clean_thread)
-        
-        print("\nVideo cleaning completed!")
-
-    if auto:
-        user_input = "Y"
-    else:
-        user_input = input(f"Parse {book_name} from douban? (Y/N): ")
-    if user_input.upper() in ["Y", "YES"]:
-        print(f"Parsing {book_name} from douban, please wait...")
+        print(f"Parsing {book_name} reviews, please wait...")
         print("Parsing in progress", end="", flush=True)
         # Start the parsing process in a thread
         parse_thread = threading.Thread(target=parse_reviews, args=(book_name,))
@@ -118,6 +133,9 @@ def main():
         
         print("\nParsing completed!")
     
+    # -----------------------------------------------------
+    # Generate report
+    # -----------------------------------------------------
     if auto:
         user_input = "Y"
     else:
