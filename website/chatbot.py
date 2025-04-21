@@ -44,10 +44,12 @@ books = [book[:-3] for book in books]  # remove .md extension
 
 # Get book from URL parameter if present
 query_params = st.query_params
-book_from_url = query_params.get("book", [None])[0]
+book_from_url = query_params.get("book", [None])
+
+print(book_from_url)
 
 # Check if the book from URL is valid
-if book_from_url and book_from_url in books:
+if book_from_url in books:
     selected_book = book_from_url
     # Set URL parameter to maintain state
     st.query_params["book"] = selected_book
