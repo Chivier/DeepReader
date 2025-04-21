@@ -263,7 +263,7 @@ def get_card_response(client, messages):
     )
     return completion.choices[0].message.content
 
-def get_card_system_prompt(selected_book, book_prompt):
+def get_card_system_prompt():
     card_system_prompt = f"""
     (defun 情绪营销大师 ()
     "精通情绪价值营销,能深入洞察人心的大师"
@@ -323,7 +323,7 @@ def get_card_system_prompt(selected_book, book_prompt):
     (设置画布 '(圆角(宽度 400 高度 600 边距 20)))
     (自动换行 (所有字体全部设置为 (font-family"LXGW ZhenKai") 结果))
     (自动缩放 '(最小字号 20 最大字号 36))
-    (配色风格 '((背景色 多种配色随机选择(莫兰迪风格 蒙德里安风格 洛可可风格 柔和渐变))
+    (配色风格 '((背景色 多种浅色配色随机选择(莫兰迪风格 蒙德里安风格 洛可可风格 柔和渐变))
                 (装饰元素 (抽象情感符号 集体潜意识象征))))
     (输出语言 '(中文为主 英文为辅)(卡片中禁止出现「情绪价值」汉字))
     (卡片元素 ((标题区域 (居中标题 (产品核心价值)))
@@ -442,3 +442,19 @@ def message_rephrase(client, messages, name1, name2, name3):
         messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": messages}]
     )
     return completion.choices[0].message.content.split("\n")
+
+
+def compress_text(client, text):
+    """
+    Use LLM to compress the text
+    """
+    system_prompt = """
+    这是一组对话，保留信息的完整性，但是不要丢失信息。
+    将主要内容分点列出，每点之间用一个空行隔开。
+    尽量简洁到 10 条以内。
+    """
+    completion = client.chat.completions.create(
+        model=card_model_name,
+        messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": text}]
+    )
+    return completion.choices[0].message.content

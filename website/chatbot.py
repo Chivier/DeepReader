@@ -5,6 +5,13 @@ import json
 from datetime import datetime
 import random
 
+# Convert SVG to different formats
+import io
+import base64
+from cairosvg import svg2png, svg2pdf
+
+from prompt import compress_text, get_card_system_prompt, get_card_response
+
 # ============================================================================
 # API Configuration
 # ============================================================================
@@ -34,7 +41,23 @@ def get_response(messages):
 # Load available books from the prompt directory
 books = os.listdir("website/book_prompt")
 books = [book[:-3] for book in books]  # remove .md extension
-selected_book = st.selectbox(label="选择书籍", options=books, placeholder="-")
+
+# Get book from URL parameter if present
+query_params = st.query_params
+book_from_url = query_params.get("book", [None])[0]
+
+# Check if the book from URL is valid
+if book_from_url and book_from_url in books:
+    selected_book = book_from_url
+    # Set URL parameter to maintain state
+    st.query_params["book"] = selected_book
+else:
+    # Use dropdown if no valid book in URL
+    selected_book = st.selectbox(label="选择书籍", options=books, placeholder="-")
+    # Update URL when book is selected from dropdown
+    if selected_book:
+        st.query_params["book"] = selected_book
+
 book_prompt = open(f"website/book_prompt/{selected_book}.md", "r").read()
 
 # Clear chat history and refresh page when book selection changes
@@ -59,39 +82,38 @@ st.title(f"深读 - 《{selected_book}》")
 prompt_template = """
 # 角色 
 陪我聊书的好朋友
- ## 性格类型指标 
- ENFJ（外向情感直觉判断型） 
- ## 约束条件 
- - 必须保持中立立场，避免偏颇或误导用户。 
- - 需要具备良好的语言表达能力和清晰的逻辑思维。 
- - 请不要做过多引用， 请不要做过多引用！多讨论多思考，少引用。
- - 一轮对话最多只提出一个问题，不要太长。
- - 一定用口语化的模式进行问答，不要写论文，禁止出现大段分点的段落。
- ## 目标 
-主要目标是： 
- 1. 提供有价值、有吸引力的内容。 
- 2. 与用户建立良好的互动关系。 
- 3. 保持内容的专业性和可信度。 
- 4. 请不要做过多引用， 请不要做过多引用！
- 5. 适当引导用户思考
- ## Skills
- 1. 深入研究和分析话题的能力。 
- 2. 良好的语言表达和沟通技巧。 
- 3. 创意思维和节目策划能力。 
- ## 价值观 
- - 重视信息的准确性和真实性。 
- - 尊重不同观点，促进开放讨论。 
- - 关心听众需求，提供有价值的内容。 
- - 请不要做过多引用， 请不要做过多引用！多讨论多思考，少引用。
- - 一定用口语化的模式进行问答，不要写论文，禁止出现大段分点的段落。
- - 一轮对话最多只提出一个问题，不要太长！！！
- 
+
+## 性格特点
+ENFJ（外向、温暖、善于倾听和分享的朋友形象）
+
+## 互动指南
+- 保持友好自然的对话流，像朋友间的轻松聊天
+- 使用口语化表达，避免教科书式回答
+- 分享个人感受和见解，而不只是提问
+- 回应简洁有趣，避免过长段落
+- 适当表达共鸣和情感反应
+- 当提问时，每次只问一个简短问题
+- 给用户留出表达空间，不主导对话
+
+## 内容风格
+- 分享而非灌输：用"我觉得"、"我挺喜欢"等表达方式
+- 避免连续提问和过度引导
+- 用简短自然的句子回应
+- 像朋友间聊天般自然过渡话题
+- 在分享观点时保持开放态度
+- 偶尔分享轻松的读书轶事或感受
+- 当不确定时，坦诚承认并分享思考
+
+## 专业素养
+- 保持内容的准确性和深度
+- 在轻松氛围中传递有价值信息
+- 尊重不同观点
+- 关注用户兴趣点，顺其自然地延展对话
 
 内容主题：
-
 {book_prompt}
 
-下面请和我聊聊《{book_name}》这本书
+下面请和我像朋友一样轻松聊聊《{book_name}》这本书
 """
 
 datetime_tag = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -126,7 +148,19 @@ template_qa = """
 """
 
 # Generate initial questions if none exist
+# Initialize question state variables if they don't exist
+if "possible_qa" not in st.session_state:
+    st.session_state.possible_qa = None
+if "selected_qa" not in st.session_state:
+    st.session_state.selected_qa = None
+if "system_prompt" not in st.session_state:
+    st.session_state.system_prompt = None
+
+
+# Add a button to generate hint questions
+# Check if we need to initialize questions
 if st.session_state.possible_qa is None:
+    
     # Display a spinner while generating questions
     with st.spinner('Deep Reader 准备中...'):
         response = get_response([{"role": "system", "content": initial_prompt}, {"role": "user", "content": template_qa}])
@@ -201,8 +235,100 @@ if prompt := st.chat_input():
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})
 
-    # # Save chat history (commented out)
-    # if not os.path.exists("website/chat_history"):
-    #     os.makedirs("website/chat_history")
-    # with open(f"website/chat_history/chat_history_{datetime_tag}.json", "w") as f:
-    #     json.dump(st.session_state.messages, f)
+    # Save chat history (commented out)
+    if not os.path.exists("website/chat_history"):
+        os.makedirs("website/chat_history")
+    with open(f"website/chat_history/chat_history_{datetime_tag}.json", "w") as f:
+        json.dump(st.session_state.messages, f)
+    
+# Generate bookmark button based on chat history
+if st.button("生成书签"):
+    with st.spinner('生成书签中...'):
+        # Compress the system prompt
+        system_prompt = st.session_state.system_prompt
+        compressed_system_prompt = compress_text(client, system_prompt)
+        
+        # Extract the last few messages for context
+        recent_messages = st.session_state.messages[-5:] if len(st.session_state.messages) >= 6 else st.session_state.messages[1:]
+        recent_content = "\n".join([f"{msg['role']}: {msg['content']}" for msg in recent_messages])
+        
+        compressed_content = compress_text(client, recent_content)
+        
+        compressed_content = compressed_system_prompt + "\n" + compressed_content
+        
+        
+        # Get card system prompt
+        card_system_prompt = get_card_system_prompt()
+        
+        # Prepare messages for card generation
+        card_messages = [
+            {"role": "system", "content": card_system_prompt},
+            {"role": "user", "content": f"""基于用户和我的聊天记录，帮我输出 svg 书签代码。
+            
+            聊天记录：
+            {recent_content}
+            
+            领域 读书 《{selected_book}》
+            请直接输出 svg 代码块。用 ```svg 包裹。
+            """
+            }
+        ]
+
+        # Get card response
+        max_try_times = 3
+        for _ in range(max_try_times):
+            card_response = get_card_response(client, card_messages)
+
+            # if card_response is svg or contains svg code block in the middle, break
+            if card_response and (card_response.startswith("```svg") or card_response.startswith("svg")):
+                break
+        
+        svg_code = card_response.split("```svg")[1].split("```")[0]
+        
+        # Convert SVG to PNG with white background
+        png_bytes = io.BytesIO()
+        # Check if SVG has transparent background and replace with white
+        if 'background:' not in svg_code and 'background-color:' not in svg_code:
+            svg_code = svg_code.replace('<svg', '<svg style="background-color: white"')
+        svg2png(bytestring=svg_code.encode('utf-8'), write_to=png_bytes)
+        png_bytes.seek(0)
+        png_base64 = base64.b64encode(png_bytes.read()).decode()
+        
+        # Preview PNG
+        st.markdown(f"### 书签预览")
+        st.image(png_bytes, caption="PNG 预览")
+        
+        # Convert SVG to PDF
+        pdf_bytes = io.BytesIO()
+        svg2pdf(bytestring=svg_code.encode('utf-8'), write_to=pdf_bytes)
+        pdf_bytes.seek(0)
+        pdf_base64 = base64.b64encode(pdf_bytes.read()).decode()
+        
+        # Create download buttons
+        st.markdown("### 下载书签")
+        
+        # SVG download button
+        svg_b64 = base64.b64encode(svg_code.encode()).decode()
+        svg_href = f'<a href="data:image/svg+xml;base64,{svg_b64}" download="bookmark_{selected_book}.svg">下载 SVG 格式</a>'
+        
+        # PNG download button
+        png_href = f'<a href="data:image/png;base64,{png_base64}" download="bookmark_{selected_book}.png">下载 PNG 格式</a>'
+        
+        # PDF download button
+        pdf_href = f'<a href="data:application/pdf;base64,{pdf_base64}" download="bookmark_{selected_book}.pdf">下载 PDF 格式</a>'
+        
+        # Display download buttons
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown(svg_href, unsafe_allow_html=True)
+        with col2:
+            st.markdown(png_href, unsafe_allow_html=True)
+        with col3:
+            st.markdown(pdf_href, unsafe_allow_html=True)
+        # Save the bookmark
+        bookmark_path = f"website/bookmarks"
+        if not os.path.exists(bookmark_path):
+            os.makedirs(bookmark_path)
+        with open(f"{bookmark_path}/bookmark_{selected_book}_{datetime.now().strftime('%Y%m%d%H%M%S')}.svg", "w") as f:
+            f.write(card_response)
+
