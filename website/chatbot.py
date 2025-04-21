@@ -51,7 +51,7 @@ elif st.session_state.previous_book != selected_book:
     st.session_state.system_prompt = None
     st.rerun()
 
-st.title(f"深读 - {selected_book}")
+st.title(f"深读 - 《{selected_book}》")
 
 # ============================================================================
 # Prompt Template Configuration
@@ -91,7 +91,7 @@ prompt_template = """
 
 {book_prompt}
 
-下面请和我聊聊{book_name}这本书
+下面请和我聊聊《{book_name}》这本书
 """
 
 datetime_tag = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -101,7 +101,7 @@ initial_prompt = prompt_template.format(book_name=selected_book, book_prompt=boo
 # Chat History Initialization
 # ============================================================================
 # Initialize chat history if it doesn't exist
-if "messages" not in st.session_state:
+if "messages" not in st.session_state or st.session_state.messages == []:
     st.session_state.messages = []
     book_prompt = open(f"website/book_prompt/{selected_book}.md", "r").read()
     initial_prompt = prompt_template.format(book_name=selected_book, book_prompt=book_prompt)
