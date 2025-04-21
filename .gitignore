@@ -238,3 +238,4 @@ website/book_prompt/纳瓦尔宝典.md
 .env.local
 website/book_prompt/*
 Novel/*
+website/bookmarks
