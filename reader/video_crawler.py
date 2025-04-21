@@ -39,7 +39,9 @@ class VideoCrawler:
             # Use lux for bilibili downloads
             try:
                 import subprocess
-                cmd = ['lux', '-o', f"{temp_video_path}.mp4", url]
+                temp_video_directory = temp_video_path.rsplit('/', 1)[0]
+                temp_video_name = temp_video_path.rsplit('/', 1)[1]
+                cmd = ['lux', '-o', f"{temp_video_directory}", '-O', temp_video_name, url]
                 subprocess.run(cmd, check=True)
                 
                 # Convert to mp3 using ffmpeg

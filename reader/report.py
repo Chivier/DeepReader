@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import nerif
 
-smart_model_name = "openrouter/deepseek/deepseek-r1"
+smart_model_name = "google/gemini-2.5-pro-preview-03-25"
 
 def report_parser(book_name):
     file_path = f"{book_name}/parsed_data.csv"
@@ -70,6 +70,8 @@ def report_parser(book_name):
     - 不要包含任何除了 markdown 文档以外的其他内容。
     - 长度接近 8000 字。
     - 不要提到「用户xx认为」，的观点，用第一人称写书评。
+    - 单独列出剧情部分
+    - 感受、评价、思考三部分，可以使用分点的形式列举。
     """
     
     with open(f"{book_name}_prompt.md", "w") as f:

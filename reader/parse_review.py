@@ -4,7 +4,7 @@ import pandas as pd
 import json
 
 model_name = "openrouter/deepseek/deepseek-r1"
-model_name = "openrouter/anthropic/claude-3.7-sonnet:beta"
+model_name = "openrouter/anthropic/claude-3.7-sonnet"
 # model_name = "ollama/deepseek-r1:32b"
 
 model = nerif.model.SimpleChatModel(model_name)
