@@ -30,62 +30,6 @@ MBTI_INFO = [
 
 MBTI_INFO_DICT = dict(zip(MBTI_TYPE, MBTI_INFO))
 
-PREFERENCE_TYPE = [["理性中立，理性分析作品的有点和缺点", "邪恶中立，喜欢多开玩笑"],
-                     ["强烈喜欢，喜欢讨论作品的细节", "理性喜欢，不谈论细节，多讨论感受"],
-                     ["强烈不喜欢，不喜论作品的一切", "理性不喜欢，多讨论感受"]]
-PREFERENCE_NAME = [["理中客", "乐子人"],
-                     ["真爱粉", "理性粉"],
-                     ["小黑子", "理性黑"]]
-PREFERENCE_EMOJI = [["🤔", "😈"],
-                     ["😍", "😄"],
-                     ["🤢", "😖"]]
-PREFERENCE_TUNE = [
-    # 中立
-    [
-    [
-        "我是一个理性中立的人，我喜欢讨论作品的细节，不喜欢讨论感受。",
-        "这本书其实优点和缺点都很明显",
-        "大杂烩，也许华为正是集各家多长吧。道理都明白，还是要看切实执行。",
-        "道理大而全，读起来说不上哪里不对劲，就是觉得不对劲，说有收获吧，好像没啥收获，说没收获吧，又感觉有点东西。"
-    ],
-    [
-        "这本书的优点和缺点都很明显",
-        "确实非常推特风，观点很有利于传播，但也正因为这种极易传播也使得书的内容很散 内容很多是值得深省的，值得一读",
-        "这本书就像一碗附赠汤匙和菜谱的鸡汤，想喝就喝，觉得好喝就学。",
-        "停止追问，开始欣赏。嘻嘻。"
-    ]
-    ], 
-    # 喜欢
-    [
-    [
-        "这本书我超爱！从个人角度上来说我非常喜欢！",
-        "很不错的一本书，论述简单明了，有很多引人深思的观点，也有很多新的认知。会反复观看，带着辩证性思维来思考书中的观点，将一些可行的建议慢慢付诸行动。"
-    ], 
-    [
-        "这本书挺好的，读起来很有道理。",
-        "感觉没有预期那么受益匪浅 有些观点还是挺有用的 这本书越早看越好 不然其实很多人生经历都会告诉你此书中的观点 只不过有时候看了没有实际经历还是很难彻底了悟其中的道理",
-    ]
-    ],
-    # 不喜欢
-    [
-    # 强烈不喜欢
-    [
-        "这本书太垃圾了",
-        "实在他妈受不了了，毫无文笔可言。",
-        "虽然科幻最大的弊病之一就是文笔差，但至少做到自然流畅吧，看着这生硬的文字配上这无趣的剧情实在是种折磨。",
-        "什么主题都没有，什么都没表达 我评价是不如看特摄写人外:)",
-        "心灵鸡汤，后悔买，把读者当傻子。"
-    ],
-    # 理性不喜欢
-    [
-        "这本书我其实并不是很喜欢",
-        "充斥着荒诞的矛盾，并以种种骗局一层层模糊存在与真实的界限。本身比较枯燥，许多梗都是隐藏暗示的。",
-        "一直想看的经典，看完也只是so so，一个时代的经典换一个时代显得很落后了",
-        "没有太多共鸣。总的感觉比较飘忽。读的时候比较难理解到设定，或者说，缺少提前介绍里面的设定，所以一边看一边去理解，比较吃力，也就不理解里面的各种表现。"
-    ],
-    ]
-]
-
 STYLES = ["严肃", "轻松", "幽默", "抽象混沌"]
 
 book_prompt_template = """
@@ -149,32 +93,6 @@ def get_response(client, messages):
         messages=messages
     )
     return completion.choices[0].message.content
-
-def three_person_generation(book_name, book_prompt):
-    """
-    Generate three person's different perspectives on the book
-    """
-    # select 3 different mbti types
-    mbti_types = random.sample(MBTI_TYPE, 3)
-    # generate 3 different prompts
-    prompts = []
-    # attitude bit represents the preference type (rand from 1 to 6), each bit means 2 choices
-    attitude_bits = random.randint(1, 6)
-
-    person_id = 0
-    while person_id < 3:
-        attitude_bit = 1 if attitude_bits & (1 << person_id) else 0
-        preference_type = PREFERENCE_TYPE[person_id][attitude_bit]
-        preference_name = PREFERENCE_NAME[person_id][attitude_bit]
-        emoji = PREFERENCE_EMOJI[person_id][attitude_bit]
-        style_guide = PREFERENCE_TUNE[person_id][attitude_bit]
-        
-        prompt = prompt_template.format(mbti_type=mbti_types[person_id], mbti_info=MBTI_INFO_DICT[mbti_types[person_id]], preference_type=preference_type, book_name=book_name)
-        prompts.append({"emoji": emoji, "preference_type": preference_type, "preference_name": preference_name, "prompt": prompt, "style_guide": style_guide})
-        person_id += 1
-    
-    book_prompt = book_prompt_template.format(book_name=book_name, book_prompt=book_prompt)
-    return prompts, book_prompt
 
 
 def get_card_response(client, messages):
