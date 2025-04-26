@@ -237,3 +237,5 @@ website/book_prompt/未来简史.md
 website/book_prompt/纳瓦尔宝典.md
 .env.local
 website/book_prompt/*
+Novel/*
+website/bookmarks

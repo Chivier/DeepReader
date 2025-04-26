@@ -3,8 +3,8 @@ import os
 import pandas as pd
 import json
 
-model_name = "openrouter/deepseek/deepseek-r1"
-model_name = "openrouter/anthropic/claude-3.7-sonnet:beta"
+# model_name = "openrouter/deepseek/deepseek-r1"
+model_name = "openrouter/anthropic/claude-3.7-sonnet"
 # model_name = "ollama/deepseek-r1:32b"
 
 model = nerif.model.SimpleChatModel(model_name)
@@ -12,6 +12,7 @@ model = nerif.model.SimpleChatModel(model_name)
 prompt_story = """帮我从书评中找到这本书的剧情部分。请严格遵循以下规则：
 - 输出所有和剧情部分相关的句子
 - 请严格遵循书评原文的文本，不要进行任何修改
+- 如果没有剧情部分，请输出“没有涉及剧情”
 
 书评：
 <REVIEW>
@@ -22,7 +23,7 @@ prompt_story = """帮我从书评中找到这本书的剧情部分。请严格�
 prompt_feeling = """帮我从书评中找到这本书的感受部分。请严格遵循以下规则：
 - 输出所有和感受部分相关的句子
 - 请严格遵循书评原文的文本，不要进行任何修改
-
+- 如果没有感受部分，请输出“没有涉及感受”
 书评：
 <REVIEW>
 
@@ -32,6 +33,7 @@ prompt_feeling = """帮我从书评中找到这本书的感受部分。请严格
 prompt_evaluation = """帮我从书评中找到这本书的评价部分。请严格遵循以下规则：
 - 输出所有和评价部分相关的句子
 - 请严格遵循书评原文的文本，不要进行任何修改
+- 如果没有评价部分，请输出“没有包含评价”
 
 书评：
 <REVIEW>
@@ -44,7 +46,7 @@ prompt_thinking = """帮我从书评中找到这本书的思考部分。请严�
 - 和书本内容无关的句子都算是评论者的思考
 - 和作者相关的生平经历也算做是评论者的思考
 - 请严格遵循书评原文的文本，不要进行任何修改
-
+- 如果没有思考部分，请输出“没有涉及思考”
 书评：
 <REVIEW>
 

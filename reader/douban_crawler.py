@@ -7,7 +7,7 @@ import random
 from urllib.parse import urlparse, parse_qs
 import re
 
-JINA_READER_URL = "https://reader.victorique.site/"
+JINA_READER_URL = os.environ.get('JINA_READER_URL', '')
 
 def extract_subject_id(url):
     # Parse the URL
@@ -32,15 +32,15 @@ def extract_subject_id(url):
 
 class DoubanBookSpider:
     def __init__(self):
-        # 设置请求头，模拟浏览器
+        # set headers
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
-        # 豆瓣搜索URL
+        # douban search url
         self.search_url = 'https://www.douban.com/search?q={}&cat=1001'
         
     def search_book(self, book_name):
-        """搜索图书，获取图书详情页URL"""
+        """search book, get book detail page url"""
         try:
             response = requests.get(self.search_url.format(book_name), headers=self.headers)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -50,7 +50,8 @@ class DoubanBookSpider:
             book_urls = []
             for h3 in h3s:
                 url = h3.find('a')['href']
-                # url example: https://www.douban.com/link2/?url=https%3A%2F%2Fbook.douban.com%2Fsubject%2F36860223%2F&query=%E7%AA%84%E9%97%A8&cat_id=1001&type=search&pos=11
+                # url example: 
+                # https://www.douban.com/link2/?url=https%3A%2F%2Fbook.douban.com%2Fsubject%2F36860223%2F&query=%E7%AA%84%E9%97%A8&cat_id=1001&type=search&pos=11
                 # get subject id from url params
                 subject_id = extract_subject_id(url)
                 book_urls.append(f"https://book.douban.com/subject/{subject_id}/")
@@ -60,25 +61,25 @@ class DoubanBookSpider:
             else:
                 return None
         except Exception as e:
-            print(f"搜索图书时出错: {e}")
+            print(f"search book error: {e}")
             return None
 
     def get_book_info(self, book_url):
-        """获取图书基本信息"""
+        """get book basic info"""
         try:
             response = requests.get(book_url, headers=self.headers)
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # 获取标题
+            # get title
             title = soup.find('h1').text.strip() if soup.find('h1') else ''
             
-            # 获取评分
+            # get rating
             rating = soup.find('strong', class_='ll rating_num')
-            rating = rating.text.strip() if rating else '暂无评分'
+            rating = rating.text.strip() if rating else 'no rating'
             
-            # 获取作者
+            # get author
             info = soup.find('div', id='info')
-            author = info.find('a').text.strip() if info and info.find('a') else '未知作者'
+            author = info.find('a').text.strip() if info and info.find('a') else 'unknown author'
             
             book_info = {
                 'title': title,
@@ -87,11 +88,11 @@ class DoubanBookSpider:
             }
             return book_info
         except Exception as e:
-            print(f"获取图书信息时出错: {e}")
+            print(f"get book info error: {e}")
             return None
         
     def get_review_urls(self, book_url, range=5):
-        """获取长评"""
+        """get long reviews"""
         offset = 0
         reviews = []
         while offset < range:
@@ -108,13 +109,13 @@ class DoubanBookSpider:
                 matches = re.findall(pattern, text)
                 reviews.extend(matches)
             except Exception as e:
-                print(f"获取长评时出错: {e}")
+                print(f"get long reviews error: {e}")
                 return reviews
             offset += 1
         return reviews
 
     def get_reviews(self, review_urls):
-        """获取长评内容"""
+        """get long reviews content"""
         reviews = []
         for review_url in review_urls:
             review_url = JINA_READER_URL + review_url
@@ -127,8 +128,8 @@ class DoubanBookSpider:
         return reviews
     
     def crawl_book(self, book_name, limit=2):
-        """主爬虫函数"""
-        # 搜索图书
+        """main crawler function"""
+        # search book
         if not os.path.exists(f"{book_name}/website"):
             os.makedirs(f"{book_name}/website")
         else:
@@ -136,7 +137,7 @@ class DoubanBookSpider:
             
         book_urls = self.search_book(book_name)
         if not book_urls:
-            print(f"未找到图书: {book_name}")
+            print(f"Book {book_name} not found")
             return
         
         # get book reviews urls
