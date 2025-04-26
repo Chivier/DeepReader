@@ -30,10 +30,10 @@ if "initial_prompt3" not in st.session_state:
 # Book Selection and Session Management
 # ============================================================================
 # Load available books from the prompt directory
-books = os.listdir("website/book_prompt")
+books = os.listdir("book_prompt")
 books = [book[:-3] for book in books]  # remove .md extension
 selected_book = st.selectbox(label="选择书籍", options=books, placeholder="-")
-book_prompt = open(f"website/book_prompt/{selected_book}.md", "r").read()
+book_prompt = open(f"book_prompt/{selected_book}.md", "r").read()
 
 # Clear chat history and refresh page when book selection changes
 if "previous_book" not in st.session_state:
@@ -69,9 +69,8 @@ def generate_card(selected_book, book_prompt):
     messages_markdown = ""
     for message in st.session_state.messages:
         messages_markdown += f"{message['role']}: {message['content']}\n"
+
     card_prompt += f"""
-    
-    
     {messages_markdown}
     """
    
