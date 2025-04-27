@@ -39,7 +39,21 @@ def get_response(messages):
 # Book Selection and Session Management
 # ============================================================================
 # Load available books from the prompt directory
-books = os.listdir("website/book_prompt")
+
+def find_book_prompt_dir(start_path="."):
+    for root, dirs, files in os.walk(start_path):
+        if "book_prompt" in dirs:
+            return os.path.abspath(os.path.join(root, "book_prompt"))
+    return None
+
+# 获取当前目录
+current_dir = os.getcwd()
+
+# 找到具体路径
+book_prompt_dir = find_book_prompt_dir(current_dir)
+
+books = os.listdir(book_prompt_dir)
+
 books = [book[:-3] for book in books]  # remove .md extension
 
 # Get book from URL parameter if present
@@ -60,7 +74,7 @@ else:
     if selected_book:
         st.query_params["book"] = selected_book
 
-book_prompt = open(f"website/book_prompt/{selected_book}.md", "r").read()
+book_prompt = open(f"{book_prompt_dir}/{selected_book}.md", "r").read()
 
 # Clear chat history and refresh page when book selection changes
 if "previous_book" not in st.session_state:
@@ -127,7 +141,7 @@ initial_prompt = prompt_template.format(book_name=selected_book, book_prompt=boo
 # Initialize chat history if it doesn't exist
 if "messages" not in st.session_state or st.session_state.messages == []:
     st.session_state.messages = []
-    book_prompt = open(f"website/book_prompt/{selected_book}.md", "r").read()
+    book_prompt = open(f"{book_prompt_dir}/{selected_book}.md", "r").read()
     initial_prompt = prompt_template.format(book_name=selected_book, book_prompt=book_prompt)
     st.session_state.messages.append({"role": "assistant", "content": initial_prompt})
 
