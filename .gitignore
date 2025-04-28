@@ -239,3 +239,5 @@ website/book_prompt/纳瓦尔宝典.md
 website/book_prompt/*
 Novel/*
 website/bookmarks
+website-en/bookmarks
+website-en/chat_history/*
