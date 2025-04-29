@@ -169,7 +169,7 @@ def get_card_system_prompt():
   (auto_resize '(min_font_size 20 max_font_size 36))
   (color_scheme '((background_color random_selection_from_multiple_color_schemes(morandi_style mondrian_style rococo_style soft_gradient))
               (decorative_elements (abstract_emotional_symbols collective_unconscious_symbols))))
-  (output_language '(primarily_english supplementary_chinese)(cards_must_not_contain_"emotional_value"_characters))
+  (output_language '(all_in_english)(cards_must_not_contain_"emotional_value"_characters))
   (card_elements ((title_area (centered_title (product_core_value)))
                       (subtitle (product_name result))))
               dividing_line

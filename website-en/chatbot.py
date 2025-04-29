@@ -39,7 +39,7 @@ def get_response(messages):
 # Book Selection and Session Management
 # ============================================================================
 # Load available books from the prompt directory
-books = os.listdir("website/book_prompt")
+books = os.listdir("website-en/book_prompt")
 books = [book[:-3] for book in books]  # remove .md extension
 
 # Get book from URL parameter if present
@@ -57,10 +57,8 @@ else:
     # Use dropdown if no valid book in URL
     selected_book = st.selectbox(label="Select Book", options=books, placeholder="-")
     # Update URL when book is selected from dropdown
-    if selected_book:
-        st.query_params["book"] = selected_book
 
-book_prompt = open(f"website/book_prompt/{selected_book}.md", "r").read()
+book_prompt = open(f"website-en/book_prompt/{selected_book}.md", "r").read()
 
 # Clear chat history and refresh page when book selection changes
 if "previous_book" not in st.session_state:
@@ -127,7 +125,7 @@ initial_prompt = prompt_template.format(book_name=selected_book, book_prompt=boo
 # Initialize chat history if it doesn't exist
 if "messages" not in st.session_state or st.session_state.messages == []:
     st.session_state.messages = []
-    book_prompt = open(f"website/book_prompt/{selected_book}.md", "r").read()
+    book_prompt = open(f"website-en/book_prompt/{selected_book}.md", "r").read()
     initial_prompt = prompt_template.format(book_name=selected_book, book_prompt=book_prompt)
     st.session_state.messages.append({"role": "assistant", "content": initial_prompt})
 
@@ -238,9 +236,9 @@ if prompt := st.chat_input():
     st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Save chat history (commented out)
-    if not os.path.exists("website/chat_history"):
-        os.makedirs("website/chat_history")
-    with open(f"website/chat_history/chat_history_{datetime_tag}.json", "w") as f:
+    if not os.path.exists("website-en/chat_history"):
+        os.makedirs("website-en/chat_history")
+    with open(f"website-en/chat_history/chat_history_{datetime_tag}.json", "w") as f:
         json.dump(st.session_state.messages, f)
     
 # Generate bookmark button based on chat history
@@ -328,7 +326,7 @@ if st.button("Generate Bookmark"):
         with col3:
             st.markdown(pdf_href, unsafe_allow_html=True)
         # Save the bookmark
-        bookmark_path = f"website/bookmarks"
+        bookmark_path = f"website-en/bookmarks"
         if not os.path.exists(bookmark_path):
             os.makedirs(bookmark_path)
         with open(f"{bookmark_path}/bookmark_{selected_book}_{datetime.now().strftime('%Y%m%d%H%M%S')}.svg", "w") as f:
