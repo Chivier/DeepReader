@@ -6,7 +6,9 @@
       "Bash(rm:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(chmod:*)",
+      "Bash(git rm:*)"
     ],
     "deny": []
   }
