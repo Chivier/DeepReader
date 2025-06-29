@@ -214,9 +214,9 @@ prompt_template = """
 openai_api_key = os.getenv("OPENAI_API_KEY")
 openai_base_url = os.getenv("OPENAI_BASE_URL")
 model_name = os.getenv("DEEPREADER_MODEL_NAME")
-card_model_name = os.getenv("CARD_MODEL_NAME") # default is claude-3-7-sonnet-20250219
+card_model_name = os.getenv("CARD_MODEL_NAME") # default is gpt-4.1
 if card_model_name is None:
-    card_model_name = "claude-3-7-sonnet-20250219"
+    card_model_name = "gpt-4.1"
 
 def get_client():
     client = openai.OpenAI(
@@ -674,9 +674,9 @@ prompt_template = """
 openai_api_key = os.getenv("OPENAI_API_KEY")
 openai_base_url = os.getenv("OPENAI_BASE_URL")
 model_name = os.getenv("DEEPREADER_MODEL_NAME")
-card_model_name = os.getenv("CARD_MODEL_NAME") # default is claude-3-7-sonnet-20250219
+card_model_name = os.getenv("CARD_MODEL_NAME") # default is gpt-4.1
 if card_model_name is None:
-    card_model_name = "claude-3-7-sonnet-20250219"
+    card_model_name = "gpt-4.1"
 
 def get_client():
     client = openai.OpenAI(
