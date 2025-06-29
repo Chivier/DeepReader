@@ -285,7 +285,8 @@ if os.path.exists(prompt_dir):
                     col1, col2 = st.columns(2)
                     with col1:
                         if st.button("💬 对话", key=f"chat_{i}"):
-                            st.switch_page("chatbot.py")
+                            st.query_params["book"] = book
+                            st.switch_page("pages/1_💬_聊天室.py")
                     with col2:
                         if st.button("🗑️ 删除", key=f"delete_{i}"):
                             if st.session_state.get(f"confirm_delete_{i}"):

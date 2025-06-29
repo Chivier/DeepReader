@@ -93,18 +93,30 @@ if not books:
 query_params = st.query_params
 book_from_url = query_params.get("book")
 
-# 选择书籍
+# 处理书籍选择
 if book_from_url and book_from_url in books:
+    # URL 中有有效的书籍参数
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.info(f"当前书籍：《{book_from_url}》")
+    with col2:
+        if st.button("切换书籍"):
+            # 清除 URL 参数，显示选择界面
+            st.query_params.clear()
+            st.rerun()
     selected_book = book_from_url
-    st.query_params["book"] = selected_book
 else:
+    # 没有有效的 URL 参数，显示选择界面
+    st.markdown("### 请选择一本书开始对话")
     selected_book = st.selectbox(
         label="📚 选择书籍", 
         options=books, 
-        placeholder="请选择一本书..."
+        placeholder="请选择一本书...",
+        index=None
     )
     if selected_book:
         st.query_params["book"] = selected_book
+        st.rerun()
 
 if not selected_book:
     st.info("请选择一本书开始对话")

@@ -679,6 +679,8 @@ if st.session_state.generation_status["success"]:
     
     # 提供跳转按钮
     if st.button("📖 前往聊天页面"):
+        # 设置 URL 参数
+        st.query_params["book"] = book_name
         # 重置状态
         st.session_state.generation_status = {
             "current_step": "",
