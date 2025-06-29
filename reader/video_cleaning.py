@@ -31,7 +31,20 @@ Fixed Text:
     return response
 
 def clean_all_video_files(path="example_book/video"):
-    for file in os.listdir(path):
+    # 检查目录是否存在
+    if not os.path.exists(path):
+        print(f"Video directory {path} does not exist, skipping video cleaning")
+        return
+    
+    # 获取文件列表
+    files = os.listdir(path)
+    txt_files = [f for f in files if f.endswith(".txt") and not f.endswith("_cleaned.txt")]
+    
+    if not txt_files:
+        print(f"No video transcript files found in {path}")
+        return
+    
+    for file in txt_files:
         if file.endswith(".txt") and not file.endswith("_cleaned.txt"):
             print(f"Cleaning {file}")
             clean_video(f"{path}/{file}")

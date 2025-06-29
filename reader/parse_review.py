@@ -82,47 +82,54 @@ def parse_reviews(book_path="example_book"):
     # - thinking
 
     log_file = "log.txt"
+    
     # read all files in the douban_folder
-    for file in os.listdir(douban_folder):
-        if file.endswith("cleaned.txt"):
-            review_id = file.split("_cleaned.txt")[0]
-            review_url = f"https://book.douban.com/review/{review_id}/"
-            file_path = os.path.join(douban_folder, file)
-            story, feeling, evaluation, thinking = review_parser(file_path)
-            source = "douban"   
-            parsed_data.append([source, review_url, story, feeling, evaluation, thinking])
-            with open(log_file, "a", encoding="utf-8") as f:
-                f.write(f"{file_path} parsed successfully\n")
-                f.write(f"story: {story}\n")
-                f.write(f"feeling: {feeling}\n")
-                f.write(f"evaluation: {evaluation}\n")
-                f.write(f"thinking: {thinking}\n")
-                f.write("\n")
+    if os.path.exists(douban_folder):
+        for file in os.listdir(douban_folder):
+            if file.endswith("cleaned.txt"):
+                review_id = file.split("_cleaned.txt")[0]
+                review_url = f"https://book.douban.com/review/{review_id}/"
+                file_path = os.path.join(douban_folder, file)
+                story, feeling, evaluation, thinking = review_parser(file_path)
+                source = "douban"   
+                parsed_data.append([source, review_url, story, feeling, evaluation, thinking])
+                with open(log_file, "a", encoding="utf-8") as f:
+                    f.write(f"{file_path} parsed successfully\n")
+                    f.write(f"story: {story}\n")
+                    f.write(f"feeling: {feeling}\n")
+                    f.write(f"evaluation: {evaluation}\n")
+                    f.write(f"thinking: {thinking}\n")
+                    f.write("\n")
+    else:
+        print(f"Douban folder {douban_folder} does not exist, skipping...")
             
 
     # read all files in the video_folder
-    for file in os.listdir(video_folder):
-        if file.endswith("cleaned.txt"):
-            review_id = file.split("_cleaned.txt")[0]
-            if file.startswith("ytb_"):
-                source = "youtube"
-                review_url = f"https://www.youtube.com/watch?v={review_id}"
-            elif file.startswith("bilibili_"):
-                source = "bilibili"
-                review_url = f"https://www.bilibili.com/video/{review_id}"
-            else:
-                source = "unknown"
-                review_url = f"https://book.douban.com/review/{review_id}/"
-            file_path = os.path.join(video_folder, file)
-            story, feeling, evaluation, thinking = review_parser(file_path)
-            parsed_data.append([source, review_url, story, feeling, evaluation, thinking])
-            with open(log_file, "a", encoding="utf-8") as f:
-                f.write(f"{file_path} parsed successfully\n")
-                f.write(f"story: {story}\n")
-                f.write(f"feeling: {feeling}\n")
-                f.write(f"evaluation: {evaluation}\n")
-                f.write(f"thinking: {thinking}\n")
-                f.write("\n")
+    if os.path.exists(video_folder):
+        for file in os.listdir(video_folder):
+            if file.endswith("cleaned.txt"):
+                review_id = file.split("_cleaned.txt")[0]
+                if file.startswith("ytb_"):
+                    source = "youtube"
+                    review_url = f"https://www.youtube.com/watch?v={review_id}"
+                elif file.startswith("bilibili_"):
+                    source = "bilibili"
+                    review_url = f"https://www.bilibili.com/video/{review_id}"
+                else:
+                    source = "unknown"
+                    review_url = f"https://book.douban.com/review/{review_id}/"
+                file_path = os.path.join(video_folder, file)
+                story, feeling, evaluation, thinking = review_parser(file_path)
+                parsed_data.append([source, review_url, story, feeling, evaluation, thinking])
+                with open(log_file, "a", encoding="utf-8") as f:
+                    f.write(f"{file_path} parsed successfully\n")
+                    f.write(f"story: {story}\n")
+                    f.write(f"feeling: {feeling}\n")
+                    f.write(f"evaluation: {evaluation}\n")
+                    f.write(f"thinking: {thinking}\n")
+                    f.write("\n")
+    else:
+        print(f"Video folder {video_folder} does not exist, skipping...")
                 
     # save the parsed data to a csv file
     csv_file_path = os.path.join(book_path, "parsed_data.csv")

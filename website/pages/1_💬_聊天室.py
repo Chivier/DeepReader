@@ -80,11 +80,13 @@ def load_available_books():
         st.error(f"加载书籍列表失败: {e}")
         return [], None
 
-# 加载书籍列表
+# 加载书籍列表（每次都重新加载以获取最新列表）
 books, book_prompt_dir = load_available_books()
 
 if not books:
-    st.error("没有找到任何书籍，请检查 book_prompt 目录")
+    st.error('没有找到任何书籍，请先使用"添加新书"功能添加书籍')
+    if st.button("➕ 前往添加新书"):
+        st.switch_page("pages/2_➕_添加新书.py")
     st.stop()
 
 # 从 URL 参数获取书籍（如果存在）
@@ -432,6 +434,14 @@ with st.sidebar:
     - 讨论书中的人物和情节
     - 探讨书籍的深层主题
     """)
+    
+    st.markdown("---")
+    
+    # 添加新书按钮
+    if st.button("➕ 添加新书籍", use_container_width=True):
+        st.switch_page("pages/2_➕_添加新书.py")
+    
+    st.markdown("---")
     
     st.markdown("### 📊 会话统计")
     message_count = len([m for m in st.session_state.messages if m["role"] != "system"])

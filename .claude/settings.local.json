@@ -1,14 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find:*)",
+      "Bash(brew install:*)",
+      "Bash(pip install:*)",
+      "Bash(ln:*)",
+      "Bash(streamlit run:*)",
+      "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(rm:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(touch:*)",
+      "Bash(cp:*)",
       "Bash(chmod:*)",
-      "Bash(git rm:*)"
+      "Bash(touch:*)",
+      "Bash(DYLD_LIBRARY_PATH=\"/opt/homebrew/lib:$DYLD_LIBRARY_PATH\" streamlit run Home.py)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }
