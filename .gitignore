@@ -47,8 +47,15 @@ Thumbs.db
 # Application specific
 website/chat_history/
 website/bookmarks/
+
+# Downloaded content and processed data
+data/downloads/
+data/processed/
+website/*/  # Book-specific data directories
 */video/
 */website/
+
+# Text files (except requirements and readme)
 *.txt
 !requirements.txt
 !requirements_dev.txt
@@ -65,3 +72,4 @@ logs/
 
 # Claude Code configuration (keep local only)
 CLAUDE.md
+.claude/
