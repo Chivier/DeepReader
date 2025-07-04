@@ -344,7 +344,7 @@ if st.button("🔖 生成书签"):
                 compressed_content = compressed_system_prompt + "\n" + compressed_content
                 
                 # 获取卡片系统提示
-                card_system_prompt = get_card_system_prompt()
+                card_system_prompt = get_card_system_prompt(selected_book, book_prompt)
                 
                 # 准备卡片生成消息
                 card_messages = [
