@@ -396,27 +396,27 @@ if st.button("🔖 生成书签"):
                     pdf_base64 = base64.b64encode(pdf_bytes.read()).decode()
                     
                     # 创建下载按钮
-                    st.markdown("### 💾 下载书签")
+                    st.markdown("### 💾 保存书签")
                     
-                    col1, col2, col3 = st.columns(3)
-                    
-                    # SVG下载按钮
-                    svg_b64 = base64.b64encode(svg_code.encode()).decode()
-                    svg_href = f'<a href="data:image/svg+xml;base64,{svg_b64}" download="bookmark_{selected_book}.svg">📄 下载 SVG</a>'
+                    col1, col2 = st.columns(2)
                     
                     # PNG下载按钮
-                    png_href = f'<a href="data:image/png;base64,{png_base64}" download="bookmark_{selected_book}.png">🖼️ 下载 PNG</a>'
+                    with col1:
+                        st.download_button(
+                            label="🖼️ 保存图片",
+                            data=png_bytes.getvalue(),
+                            file_name=f"bookmark_{selected_book}.png",
+                            mime="image/png"
+                        )
                     
                     # PDF下载按钮
-                    pdf_href = f'<a href="data:application/pdf;base64,{pdf_base64}" download="bookmark_{selected_book}.pdf">📑 下载 PDF</a>'
-                    
-                    # 显示下载按钮
-                    with col1:
-                        st.markdown(svg_href, unsafe_allow_html=True)
                     with col2:
-                        st.markdown(png_href, unsafe_allow_html=True)
-                    with col3:
-                        st.markdown(pdf_href, unsafe_allow_html=True)
+                        st.download_button(
+                            label="📑 保存为 PDF",
+                            data=pdf_bytes.getvalue(),
+                            file_name=f"bookmark_{selected_book}.pdf",
+                            mime="application/pdf"
+                        )
                     
                     # 保存书签
                     bookmark_dir = "website/bookmarks"
@@ -425,7 +425,7 @@ if st.button("🔖 生成书签"):
                     with open(f"{bookmark_dir}/{bookmark_filename}", "w", encoding="utf-8") as f:
                         f.write(svg_code)
                     
-                    st.success(f"书签已保存到 {bookmark_dir}/{bookmark_filename}")
+                    st.success("书签生成成功！")
                     
             except Exception as e:
                 st.error(f"生成书签时出错: {e}")
