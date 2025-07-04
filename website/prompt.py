@@ -68,7 +68,7 @@ card_system_prompt = f"""
   (setq design-rule "合理使用负空间，整体排版要有呼吸感"
         design-principles '(简约 情感化 共鸣))
   (设置画布 '(圆角(宽度 400 高度 600 边距 20)))
-  (自动换行 (所有字体全部设置为 (font-family"LXGW ZhenKai") 结果))
+  (自动换行 (所有字体全部设置为 (font-family "LXGW ZhenKai") 结果))
   (自动缩放 '(最小字号 20 最大字号 36))
   (配色风格 '((背景色 多种配色随机选择(莫兰迪风格 蒙德里安风格 洛可可风格 柔和渐变))
               (装饰元素 (抽象情感符号 集体潜意识象征))))
@@ -326,7 +326,7 @@ def get_card_system_prompt():
     (setq design-rule "合理使用负空间，整体排版要有呼吸感"
             design-principles '(简约 情感化 共鸣))
     (设置画布 '(圆角(宽度 400 高度 600 边距 20)))
-    (自动换行 (所有字体全部设置为 (font-family"LXGW ZhenKai") 结果))
+    (自动换行 (所有字体全部设置为 (font-family "LXGW ZhenKai") 结果))
     (自动缩放 '(最小字号 20 最大字号 36))
     (配色风格 '((背景色 多种浅色配色随机选择(莫兰迪风格 蒙德里安风格 洛可可风格 柔和渐变))
                 (装饰元素 (抽象情感符号 集体潜意识象征))))
@@ -528,7 +528,7 @@ card_system_prompt = f"""
   (setq design-rule "合理使用负空间，整体排版要有呼吸感"
         design-principles '(简约 情感化 共鸣))
   (设置画布 '(圆角(宽度 400 高度 600 边距 20)))
-  (自动换行 (所有字体全部设置为 (font-family"LXGW ZhenKai") 结果))
+  (自动换行 (所有字体全部设置为 (font-family "LXGW ZhenKai") 结果))
   (自动缩放 '(最小字号 20 最大字号 36))
   (配色风格 '((背景色 多种配色随机选择(莫兰迪风格 蒙德里安风格 洛可可风格 柔和渐变))
               (装饰元素 (抽象情感符号 集体潜意识象征))))
@@ -786,7 +786,7 @@ def get_card_system_prompt(selected_book, book_prompt):
     (setq design-rule "合理使用负空间，整体排版要有呼吸感"
             design-principles '(简约 情感化 共鸣))
     (设置画布 '(圆角(宽度 400 高度 600 边距 20)))
-    (自动换行 (所有字体全部设置为 (font-family"LXGW ZhenKai") 结果))
+    (自动换行 (所有字体全部设置为 (font-family "LXGW ZhenKai") 结果))
     (自动缩放 '(最小字号 20 最大字号 36))
     (配色风格 '((背景色 多种配色随机选择(莫兰迪风格 蒙德里安风格 洛可可风格 柔和渐变))
                 (装饰元素 (抽象情感符号 集体潜意识象征))))

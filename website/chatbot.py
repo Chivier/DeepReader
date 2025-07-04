@@ -11,6 +11,8 @@ from datetime import datetime
 import random
 import io
 import base64
+import re
+import html
 from cairosvg import svg2png, svg2pdf
 
 from prompt import compress_text, get_card_system_prompt, get_card_response
@@ -358,28 +360,71 @@ if st.button("🔖 生成书签"):
                 else:
                     # 提取SVG代码
                     if "```svg" in card_response:
-                        svg_code = card_response.split("```svg")[1].split("```")[0]
+                        svg_code = card_response.split("```svg")[1].split("```")[0].strip()
                     else:
-                        svg_code = card_response
+                        svg_code = card_response.strip()
+                    
+                    # 确保SVG代码以正确的标签开始
+                    if not svg_code.startswith('<?xml') and not svg_code.startswith('<svg'):
+                        # 如果没有XML声明或SVG标签，尝试从响应中提取
+                        svg_match = re.search(r'<svg[^>]*>.*?</svg>', card_response, re.DOTALL)
+                        if svg_match:
+                            svg_code = svg_match.group(0)
+                        else:
+                            st.error("未能从响应中提取有效的SVG代码")
+                            continue
+                    
+                    # 清理和修复常见的SVG问题
+                    # 修复文本内容中的特殊字符
+                    def fix_svg_text(match):
+                        tag_start = match.group(1)
+                        content = match.group(2)
+                        tag_end = match.group(3)
+                        # 转义特殊字符
+                        content = html.escape(content, quote=False)
+                        return f"{tag_start}{content}{tag_end}"
+                    
+                    # 修复text标签内的内容
+                    svg_code = re.sub(r'(<text[^>]*>)(.*?)(</text>)', fix_svg_text, svg_code)
+                    
+                    # 确保所有属性值都有引号
+                    svg_code = re.sub(r'(\w+)=([^"\s>]+)(?=\s|>)', r'\1="\2"', svg_code)
                     
                     # 转换SVG为PNG（白色背景）
                     if 'background:' not in svg_code and 'background-color:' not in svg_code:
-                        svg_code = svg_code.replace('<svg', '<svg style="background-color: white"')
+                        # Check if svg tag already has style attribute
+                        if 'style=' in svg_code[:svg_code.find('>')]:
+                            # Add to existing style attribute
+                            svg_code = svg_code.replace('style="', 'style="background-color: white; ', 1)
+                        else:
+                            # Add new style attribute
+                            svg_code = svg_code.replace('<svg', '<svg style="background-color: white"', 1)
                     
-                    png_bytes = io.BytesIO()
-                    svg2png(bytestring=svg_code.encode('utf-8'), write_to=png_bytes)
-                    png_bytes.seek(0)
-                    png_base64 = base64.b64encode(png_bytes.read()).decode()
+                    # 尝试转换SVG为PNG
+                    try:
+                        png_bytes = io.BytesIO()
+                        svg2png(bytestring=svg_code.encode('utf-8'), write_to=png_bytes)
+                        png_bytes.seek(0)
+                        png_base64 = base64.b64encode(png_bytes.read()).decode()
+                    except Exception as e:
+                        st.error(f"SVG转PNG失败: {e}")
+                        # 显示SVG代码的前几行以帮助调试
+                        st.code(svg_code[:500] + "..." if len(svg_code) > 500 else svg_code, language="xml")
+                        continue
                     
                     # 预览PNG
                     st.markdown("### 📸 书签预览")
                     st.image(png_bytes, caption="PNG 预览")
                     
                     # 转换SVG为PDF
-                    pdf_bytes = io.BytesIO()
-                    svg2pdf(bytestring=svg_code.encode('utf-8'), write_to=pdf_bytes)
-                    pdf_bytes.seek(0)
-                    pdf_base64 = base64.b64encode(pdf_bytes.read()).decode()
+                    try:
+                        pdf_bytes = io.BytesIO()
+                        svg2pdf(bytestring=svg_code.encode('utf-8'), write_to=pdf_bytes)
+                        pdf_bytes.seek(0)
+                        pdf_base64 = base64.b64encode(pdf_bytes.read()).decode()
+                    except Exception as e:
+                        st.error(f"SVG转PDF失败: {e}")
+                        pdf_base64 = None
                     
                     # 创建下载按钮
                     st.markdown("### 💾 下载书签")
@@ -394,7 +439,8 @@ if st.button("🔖 生成书签"):
                     png_href = f'<a href="data:image/png;base64,{png_base64}" download="bookmark_{selected_book}.png">🖼️ 下载 PNG</a>'
                     
                     # PDF下载按钮
-                    pdf_href = f'<a href="data:application/pdf;base64,{pdf_base64}" download="bookmark_{selected_book}.pdf">📑 下载 PDF</a>'
+                    if pdf_base64:
+                        pdf_href = f'<a href="data:application/pdf;base64,{pdf_base64}" download="bookmark_{selected_book}.pdf">📑 下载 PDF</a>'
                     
                     # 显示下载按钮
                     with col1:
@@ -402,7 +448,10 @@ if st.button("🔖 生成书签"):
                     with col2:
                         st.markdown(png_href, unsafe_allow_html=True)
                     with col3:
-                        st.markdown(pdf_href, unsafe_allow_html=True)
+                        if pdf_base64:
+                            st.markdown(pdf_href, unsafe_allow_html=True)
+                        else:
+                            st.markdown("📑 PDF 不可用", unsafe_allow_html=True)
                     
                     # 保存书签
                     bookmark_dir = "website/bookmarks"
