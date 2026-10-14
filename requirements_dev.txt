@@ -1,4 +1,4 @@
 -r requirements.txt
-pytest>=9.1,<10
+pytest>=9.1.1,<10
 pytest-asyncio>=1.4,<2
 pip-audit>=2.10,<3
