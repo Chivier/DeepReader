@@ -1,0 +1,4 @@
+# Optional local speech transcription; requires ffmpeg and downloads model weights.
+-r requirements.in
+-c requirements.txt
+openai-whisper==20250625

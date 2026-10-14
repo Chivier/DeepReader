@@ -3,6 +3,7 @@ Configuration module for DeepReader web interface
 """
 
 import os
+from runtime import BOOK_PROMPT_DIR, CHAT_HISTORY_DIR, BOOKMARKS_DIR
 from typing import Optional
 
 class Config:
@@ -11,16 +12,16 @@ class Config:
     # API Configuration
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
     OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-    MODEL_NAME: str = os.getenv("DEEPREADER_MODEL_NAME", "gpt-4")
+    MODEL_NAME: str = os.getenv("DEEPREADER_MODEL_NAME", "gpt-4.1")
     
     # Application Settings
     APP_TITLE: str = "DeepReader - 深度读书"
     APP_ICON: str = "📚"
     
     # File Paths
-    BOOK_PROMPT_DIR: str = "website/book_prompt"
-    CHAT_HISTORY_DIR: str = "website/chat_history"
-    BOOKMARKS_DIR: str = "website/bookmarks"
+    BOOK_PROMPT_DIR: str = str(BOOK_PROMPT_DIR)
+    CHAT_HISTORY_DIR: str = str(CHAT_HISTORY_DIR)
+    BOOKMARKS_DIR: str = str(BOOKMARKS_DIR)
     
     # Processing Settings
     DEFAULT_DOUBAN_COUNT: int = 1

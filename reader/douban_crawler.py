@@ -4,8 +4,9 @@ from bs4 import BeautifulSoup
 import time
 import json
 import random
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, quote
 import re
+from reader.paths import validate_book_name
 
 JINA_READER_URL = os.environ.get('JINA_READER_URL', '')
 
@@ -41,20 +42,26 @@ class DoubanBookSpider:
         
     def search_book(self, book_name):
         """search book, get book detail page url"""
+        book_name = self.validate_book_name(book_name)
         try:
-            response = requests.get(self.search_url.format(book_name), headers=self.headers)
+            response = requests.get(self.search_url.format(quote(book_name)), headers=self.headers, timeout=30)
+            response.raise_for_status()
             soup = BeautifulSoup(response.text, 'html.parser')
 
             # find all h3 from soup, get the url from the href
             h3s = soup.find_all('h3')
             book_urls = []
             for h3 in h3s:
-                url = h3.find('a')['href']
+                anchor = h3.find('a', href=True)
+                if anchor is None:
+                    continue
+                url = anchor['href']
                 # url example: 
                 # https://www.douban.com/link2/?url=https%3A%2F%2Fbook.douban.com%2Fsubject%2F36860223%2F&query=%E7%AA%84%E9%97%A8&cat_id=1001&type=search&pos=11
                 # get subject id from url params
                 subject_id = extract_subject_id(url)
-                book_urls.append(f"https://book.douban.com/subject/{subject_id}/")
+                if subject_id and subject_id.isdigit():
+                    book_urls.append(f"https://book.douban.com/subject/{subject_id}/")
             
             if len(book_urls) > 0:
                 return book_urls
@@ -67,7 +74,8 @@ class DoubanBookSpider:
     def get_book_info(self, book_url):
         """get book basic info"""
         try:
-            response = requests.get(book_url, headers=self.headers)
+            response = requests.get(book_url, headers=self.headers, timeout=30)
+            response.raise_for_status()
             soup = BeautifulSoup(response.text, 'html.parser')
             
             # get title
@@ -102,7 +110,8 @@ class DoubanBookSpider:
                     reviews_url += f'?sort=hotest&start={offset * 20}'
                 
                 reader_url = JINA_READER_URL + reviews_url
-                response = requests.get(reader_url, headers=self.headers)
+                response = requests.get(reader_url, headers=self.headers, timeout=30)
+                response.raise_for_status()
                 text = response.text
                 # find all https://book.douban.com/review/5414380/ pattern
                 pattern = r'https://book\.douban\.com/review/\d+/'
@@ -112,14 +121,15 @@ class DoubanBookSpider:
                 print(f"get long reviews error: {e}")
                 return reviews
             offset += 1
-        return reviews
+        return list(dict.fromkeys(reviews))
 
     def get_reviews(self, review_urls):
         """get long reviews content"""
         reviews = []
         for review_url in review_urls:
             review_url = JINA_READER_URL + review_url
-            response = requests.get(review_url, headers=self.headers)
+            response = requests.get(review_url, headers=self.headers, timeout=30)
+            response.raise_for_status()
             text = response.text
             reviews.append([review_url, text])
             # sleep 10-15 random seconds
@@ -127,18 +137,16 @@ class DoubanBookSpider:
             
         return reviews
     
-    def crawl_book(self, book_name, limit=2):
+    validate_book_name = staticmethod(validate_book_name)
+
+    def crawl_book(self, book_name, limit=2, output_dir=None):
         """main crawler function"""
-        # search book
-        if not os.path.exists(f"{book_name}/website"):
-            os.makedirs(f"{book_name}/website")
-        else:
-            return
+        book_name = self.validate_book_name(book_name)
+        directory = os.path.join(output_dir or book_name, 'website')
             
         book_urls = self.search_book(book_name)
         if not book_urls:
-            print(f"Book {book_name} not found")
-            return
+            raise ValueError(f"Book {book_name} not found")
         
         # get book reviews urls
         reviews_urls = []
@@ -149,8 +157,9 @@ class DoubanBookSpider:
         reviews = self.get_reviews(reviews_urls)
         
         # Create directory structure: {book}/website/
-        if not os.path.exists(f"{book_name}/website"):
-            os.makedirs(f"{book_name}/website")
+        if not reviews:
+            raise ValueError("未获取到书评，请检查网络或豆瓣访问限制")
+        os.makedirs(directory, exist_ok=True)
 
         for review in reviews:
             review_url = review[0]
@@ -158,7 +167,7 @@ class DoubanBookSpider:
             review_id = review_url.split('/')[-2]
             review_id = review_id.split('?')[0]
             # Save review to {book_name}/website/douban_{review_id}.txt
-            with open(f"{book_name}/website/douban_{review_id}.txt", "w") as f:
+            with open(os.path.join(directory, f"douban_{review_id}.txt"), "w", encoding="utf-8") as f:
                 f.write(review_text)
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@
 ### Install streamlit
 
 ```bash
-pip install streamlit
+pip install -r requirements.txt
 ```
 
 ### Run streamlit app
@@ -26,5 +26,5 @@ CARD_MODEL_NAME=deepseek-v3
 ```
 
 ```bash
-source .env && streamlit run website/chatbot.py
+python -m streamlit run website/Home.py
 ```

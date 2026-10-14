@@ -4,6 +4,9 @@
 """
 
 import streamlit as st
+import runtime
+runtime.configure_import_paths()
+from runtime import BOOK_PROMPT_DIR, book_directory, validate_book_name
 import os
 import sys
 import threading
@@ -13,18 +16,9 @@ from datetime import datetime
 import subprocess
 import queue
 
-# 添加reader目录到系统路径
-reader_path = os.path.join(os.path.dirname(__file__), '..', '..', 'reader')
-if reader_path not in sys.path:
-    sys.path.append(reader_path)
-
-import douban_crawler
-import douban_cleaning
-import video_cleaning
-from parse_review import parse_reviews
-import report
-from bilibili_auto_crawler import auto_process_book_videos
-import bilibili_auto_crawler
+from reader import douban_crawler, douban_cleaning, video_cleaning, report, bilibili_auto_crawler
+from reader.parse_review import parse_reviews
+from reader.bilibili_auto_crawler import auto_process_book_videos
 
 # ============================================================================
 # 页面配置
@@ -102,6 +96,8 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
             raise e
     
     try:
+        book_name = validate_book_name(book_name)
+        work_dir = str(book_directory(book_name))
         # 1. 搜索豆瓣书籍
         if not selected_book_url:
             update_status("搜索书籍", 0, f"正在豆瓣搜索《{book_name}》...")
@@ -134,7 +130,7 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
             book_info = spider.get_book_info(selected_book_url)
             
             # 创建保存目录
-            save_dir = f"{book_name}/website"
+            save_dir = f"{work_dir}/website"
             os.makedirs(save_dir, exist_ok=True)
             
             # 保存书籍信息
@@ -145,6 +141,8 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
             update_status("爬取豆瓣", 12, f"正在获取书评列表...")
             review_urls = spider.get_review_urls(selected_book_url, range=5)
             total_reviews = len(review_urls[:5])
+            if not total_reviews:
+                raise ValueError("未获取到书评，请检查豆瓣访问状态后重试")
             
             # 逐条获取评论内容
             reviews = []
@@ -157,7 +155,8 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
                     reviews.extend(review_data)
                     # 保存评论
                     review_content = review_data[0][1]
-                    with open(f"{save_dir}/review_{i+1}.txt", 'w', encoding='utf-8') as f:
+                    review_id = review_url.rstrip("/").split("/")[-1]
+                    with open(f"{save_dir}/douban_{review_id}.txt", 'w', encoding='utf-8') as f:
                         f.write(review_content)
                 time.sleep(2)  # 避免请求过快
         
@@ -171,7 +170,7 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
         # 3. 清理豆瓣数据
         run_with_progress(
             douban_cleaning.clean_all_douban_files,
-            (f"{book_name}/website",),
+            (f"{work_dir}/website",),
             "清理豆瓣数据",
             20, 30
         )
@@ -193,7 +192,7 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
                 update_status("搜索视频", 35, f"找到 {len(videos)} 个相关视频")
                 
                 # 创建链接文件
-                links_file = crawler.create_video_links_file(videos, book_name)
+                links_file = crawler.create_video_links_file(videos, work_dir)
                 
                 # 下载视频（最多3个）
                 max_videos = min(3, len(videos))
@@ -207,21 +206,25 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
                     # 下载单个视频
                     try:
                         # 首先尝试使用 lux
-                        video_dir = f"{book_name}/video"
+                        video_dir = f"{work_dir}/video"
                         os.makedirs(video_dir, exist_ok=True)
                         
                         # 尝试使用 lux 下载
-                        lux_cmd = f"lux -o {video_dir} {video_url}"
-                        lux_result = subprocess.run(lux_cmd, shell=True, capture_output=True, text=True)
+                        lux_cmd = ["lux", "-o", video_dir, video_url]
+                        try:
+                            lux_result = subprocess.run(lux_cmd, capture_output=True, text=True, timeout=600)
+                            lux_succeeded = lux_result.returncode == 0
+                        except (FileNotFoundError, subprocess.TimeoutExpired):
+                            lux_succeeded = False
                         
-                        if lux_result.returncode == 0:
+                        if lux_succeeded:
                             update_status("下载视频", progress, 
                                         f"✅ 使用 lux 成功下载视频 {i+1}")
                         else:
                             # lux 失败，尝试使用 yt-dlp
                             update_status("下载视频", progress, 
                                         f"lux 下载失败，尝试使用 yt-dlp...")
-                            crawler.download_videos([video], book_name, 1)
+                            crawler.download_videos([video], work_dir, 1)
                         
                         time.sleep(2)  # 避免请求过快
                     except Exception as e:
@@ -233,6 +236,7 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
                 update_status("提取字幕", 48, "正在提取视频字幕...")
                 subtitle_text = crawler.extract_subtitles_text(book_name)
                 
+                crawler.extract_subtitles_text(work_dir)
                 update_status("视频处理完成", 50, f"✅ 视频处理完成，共处理 {max_videos} 个视频")
             
             run_with_progress(
@@ -245,7 +249,7 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
             # 5. 清理视频数据
             def clean_video_data():
                 try:
-                    video_cleaning.clean_all_video_files(f"{book_name}/video")
+                    video_cleaning.clean_all_video_files(f"{work_dir}/video")
                 except Exception as e:
                     update_status("清理视频数据", 60, f"⚠️ 视频数据清理跳过: {str(e)}")
                     # 不抛出异常，继续执行
@@ -265,8 +269,8 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
                 update_status("解析书评", 60, "正在读取收集到的书评...")
                 
                 # 统计文件数量
-                website_dir = f"{book_name}/website"
-                video_dir = f"{book_name}/video"
+                website_dir = f"{work_dir}/website"
+                video_dir = f"{work_dir}/video"
                 
                 website_files = []
                 video_files = []
@@ -281,12 +285,12 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
                 
                 # 执行解析
                 update_status("解析书评", 70, "正在分析书评内容，提取关键信息...")
-                parse_reviews(book_name)
+                parse_reviews(work_dir)
                 
                 update_status("解析书评", 80, f"✅ 书评解析完成，共处理 {total_files} 个文件")
             except Exception as e:
                 update_status("解析书评", 80, f"⚠️ 书评解析部分失败: {str(e)[:100]}...")
-                # 不抛出异常，继续执行
+                raise
         
         run_with_progress(
             parse_reviews_with_status,
@@ -301,14 +305,14 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
                 update_status("生成报告", 80, "正在整合所有分析结果...")
                 
                 # 检查是否有解析的数据
-                parsed_data_path = f"{book_name}/parsed_data.json"
+                parsed_data_path = f"{work_dir}/parsed_data.json"
                 if not os.path.exists(parsed_data_path):
                     # 如果没有解析数据，创建一个简单的报告
                     update_status("生成报告", 85, "未找到解析数据，生成基础报告...")
                     
                     # 读取原始书评创建简单报告
                     reviews = []
-                    website_dir = f"{book_name}/website"
+                    website_dir = f"{work_dir}/website"
                     if os.path.exists(website_dir):
                         for file in os.listdir(website_dir):
                             if file.endswith('.txt') and not file.endswith('_cleaned.txt'):
@@ -325,31 +329,17 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
                         simple_report += f"### 书评 {i+1}\n{review}...\n\n"
                     
                     # 保存报告
-                    report_path = f"{book_name}/report.md"
+                    report_path = f"{work_dir}/report.md"
                     with open(report_path, "w", encoding="utf-8") as f:
                         f.write(simple_report)
                 else:
                     # 执行正常的报告生成
-                    report.report_parser(book_name)
+                    report.report_parser(work_dir)
                 
                 update_status("生成报告", 90, "✅ 综合报告生成完成")
             except Exception as e:
                 update_status("生成报告", 90, f"⚠️ 报告生成部分失败: {str(e)[:100]}...")
-                # 创建最基础的报告
-                basic_report = f"""# 《{book_name}》阅读指南
-
-## 书籍信息
-书名：《{book_name}》
-
-## 内容简介
-（根据收集的书评整理）
-
-本书的详细内容正在整理中...
-"""
-                report_path = f"{book_name}/report.md"
-                os.makedirs(book_name, exist_ok=True)
-                with open(report_path, "w", encoding="utf-8") as f:
-                    f.write(basic_report)
+                raise
         
         run_with_progress(
             generate_report_with_status,
@@ -361,21 +351,8 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
         # 8. 生成并保存prompt
         update_status("生成Prompt", 90, "正在生成最终的书籍prompt...")
         
-        # 清理视频文件以节省空间（保留字幕）
-        try:
-            video_dir = f"{book_name}/video"
-            if os.path.exists(video_dir):
-                for file in os.listdir(video_dir):
-                    file_path = os.path.join(video_dir, file)
-                    # 只删除视频文件，保留txt字幕文件
-                    if os.path.isfile(file_path) and not file.endswith('.txt'):
-                        os.remove(file_path)
-                        print(f"Removed video file: {file}")
-        except Exception as e:
-            print(f"Error cleaning video files: {e}")
-        
         # 读取生成的报告
-        report_path = f"{book_name}/report.md"
+        report_path = f"{work_dir}/report.md"
         if os.path.exists(report_path):
             with open(report_path, "r", encoding="utf-8") as f:
                 report_content = f.read()
@@ -400,7 +377,7 @@ def generate_book_prompt_sync(book_name, include_video, status_queue, selected_b
             
             if auto_mode:
                 # 自动模式：直接保存
-                book_prompt_dir = os.path.join(os.path.dirname(__file__), "..", "book_prompt")
+                book_prompt_dir = str(BOOK_PROMPT_DIR)
                 os.makedirs(book_prompt_dir, exist_ok=True)
                 
                 prompt_file = os.path.join(book_prompt_dir, f"{book_name}.md")
@@ -449,7 +426,7 @@ with col1:
     with col_opt1:
         include_video = st.checkbox(
             "包含视频书评",
-            value=True,
+            value=False,
             help="自动搜索B站等平台的视频书评",
             disabled=st.session_state.generation_status["is_running"]
         )
@@ -464,6 +441,11 @@ with col1:
     
     # 生成按钮
     if st.button("🚀 开始生成", disabled=st.session_state.generation_status["is_running"]):
+        try:
+            book_name = validate_book_name(book_name)
+        except ValueError as exc:
+            st.error(str(exc))
+            st.stop()
         if book_name:
             # 重置状态
             st.session_state.generation_status = {
@@ -477,7 +459,9 @@ with col1:
                 "confirmation_type": None,
                 "book_urls": [],
                 "selected_book_url": None,
-                "book_info": None
+                "book_info": None,
+                "book_name": book_name,
+                "include_video": include_video
             }
             st.session_state.status_queue = queue.Queue()
             
@@ -535,8 +519,8 @@ if st.session_state.generation_status["waiting_confirmation"]:
                     generation_thread = threading.Thread(
                         target=generate_book_prompt_sync,
                         args=(
-                            book_name, 
-                            include_video, 
+                            st.session_state.generation_status["book_name"],
+                            st.session_state.generation_status["include_video"],
                             st.session_state.status_queue,
                             book['url'],
                             False  # 用户手动确认后，不再使用自动模式
@@ -566,7 +550,7 @@ if st.session_state.generation_status["waiting_confirmation"]:
         with col1:
             if st.button("📖 确认添加到聊天室", type="primary"):
                 # 保存prompt文件
-                book_prompt_dir = os.path.join(os.path.dirname(__file__), "..", "book_prompt")
+                book_prompt_dir = str(BOOK_PROMPT_DIR)
                 os.makedirs(book_prompt_dir, exist_ok=True)
                 
                 book_name = st.session_state.generation_status.get("book_name", "")
@@ -739,7 +723,7 @@ with st.sidebar:
     
     # 显示已生成的书籍
     st.markdown("### 📚 已生成书籍")
-    book_prompt_dir = os.path.join(os.path.dirname(__file__), "..", "book_prompt")
+    book_prompt_dir = str(BOOK_PROMPT_DIR)
     if os.path.exists(book_prompt_dir):
         books = [f[:-3] for f in os.listdir(book_prompt_dir) if f.endswith('.md')]
         if books:

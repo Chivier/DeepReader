@@ -1,0 +1,1717 @@
+{
+  "date": "2026-10-14",
+  "repository": "Chivier/DeepReader",
+  "baseline": {
+    "affected_packages": [
+      {
+        "name": "aiohttp",
+        "version": "3.12.14",
+        "advisory_ids": [
+          "PYSEC-2026-1097",
+          "PYSEC-2026-1099",
+          "PYSEC-2026-1100",
+          "PYSEC-2026-1101",
+          "PYSEC-2026-1105",
+          "PYSEC-2026-1106",
+          "PYSEC-2026-1107",
+          "PYSEC-2026-1109",
+          "PYSEC-2026-2094",
+          "PYSEC-2026-2095",
+          "PYSEC-2026-2096",
+          "PYSEC-2026-2097",
+          "PYSEC-2026-2098",
+          "PYSEC-2026-2099",
+          "PYSEC-2026-2100",
+          "PYSEC-2026-2101",
+          "PYSEC-2026-2102",
+          "PYSEC-2026-2103",
+          "PYSEC-2026-2104",
+          "PYSEC-2026-2105",
+          "PYSEC-2026-2106",
+          "PYSEC-2026-2107",
+          "PYSEC-2026-2108",
+          "PYSEC-2026-2109",
+          "PYSEC-2026-2110",
+          "PYSEC-2026-2111",
+          "PYSEC-2026-2112",
+          "PYSEC-2026-2113",
+          "PYSEC-2026-237",
+          "PYSEC-2026-3545",
+          "PYSEC-2026-3546",
+          "PYSEC-2026-3547"
+        ]
+      },
+      {
+        "name": "anyio",
+        "version": "4.9.0",
+        "advisory_ids": [
+          "PYSEC-2026-4024",
+          "PYSEC-2026-4025"
+        ]
+      },
+      {
+        "name": "cairosvg",
+        "version": "2.7.1",
+        "advisory_ids": [
+          "CVE-2026-107378",
+          "PYSEC-2026-2122"
+        ]
+      },
+      {
+        "name": "filelock",
+        "version": "3.18.0",
+        "advisory_ids": [
+          "PYSEC-2026-1374",
+          "PYSEC-2026-1375"
+        ]
+      },
+      {
+        "name": "fsspec",
+        "version": "2025.3.2",
+        "advisory_ids": [
+          "CVE-2026-104851"
+        ]
+      },
+      {
+        "name": "gitpython",
+        "version": "3.1.44",
+        "advisory_ids": [
+          "PYSEC-2026-2160",
+          "PYSEC-2026-2161",
+          "PYSEC-2026-2162",
+          "PYSEC-2026-2163",
+          "PYSEC-2026-3783",
+          "PYSEC-2026-3784",
+          "PYSEC-2026-3785",
+          "PYSEC-2026-3786",
+          "PYSEC-2026-3787",
+          "PYSEC-2026-3788",
+          "PYSEC-2026-3836",
+          "PYSEC-2026-3837",
+          "PYSEC-2026-3838",
+          "PYSEC-2026-3839",
+          "PYSEC-2026-3840",
+          "PYSEC-2026-3841",
+          "PYSEC-2026-3843",
+          "PYSEC-2026-3948",
+          "PYSEC-2026-3949",
+          "PYSEC-2026-3950",
+          "PYSEC-2026-3951",
+          "PYSEC-2026-3952",
+          "PYSEC-2026-3953",
+          "PYSEC-2026-3980",
+          "PYSEC-2026-3981",
+          "PYSEC-2026-3982",
+          "PYSEC-2026-3984",
+          "PYSEC-2026-3995"
+        ]
+      },
+      {
+        "name": "idna",
+        "version": "3.10",
+        "advisory_ids": [
+          "PYSEC-2026-215"
+        ]
+      },
+      {
+        "name": "litellm",
+        "version": "1.67.2",
+        "advisory_ids": [
+          "GHSA-69x8-hrgq-fjj8",
+          "PYSEC-2026-2597",
+          "PYSEC-2026-2598",
+          "PYSEC-2026-2600",
+          "PYSEC-2026-3476",
+          "PYSEC-2026-3477",
+          "PYSEC-2026-3478",
+          "PYSEC-2026-3479",
+          "PYSEC-2026-3861",
+          "PYSEC-2026-388",
+          "PYSEC-2026-390",
+          "PYSEC-2026-4066",
+          "PYSEC-2026-4067",
+          "PYSEC-2026-4069",
+          "PYSEC-2026-4070",
+          "PYSEC-2026-4071",
+          "PYSEC-2026-4072",
+          "PYSEC-2026-4073",
+          "PYSEC-2026-4074",
+          "PYSEC-2026-4075",
+          "PYSEC-2026-4076"
+        ]
+      },
+      {
+        "name": "pillow",
+        "version": "11.3.0",
+        "advisory_ids": [
+          "PYSEC-2026-165",
+          "PYSEC-2026-2249",
+          "PYSEC-2026-2250",
+          "PYSEC-2026-2251",
+          "PYSEC-2026-2252",
+          "PYSEC-2026-2253",
+          "PYSEC-2026-2254",
+          "PYSEC-2026-2255",
+          "PYSEC-2026-2256",
+          "PYSEC-2026-2257",
+          "PYSEC-2026-2874",
+          "PYSEC-2026-3451",
+          "PYSEC-2026-3453",
+          "PYSEC-2026-3454",
+          "PYSEC-2026-3493",
+          "PYSEC-2026-3494",
+          "PYSEC-2026-3495",
+          "PYSEC-2026-3496"
+        ]
+      },
+      {
+        "name": "protobuf",
+        "version": "5.29.5",
+        "advisory_ids": [
+          "PYSEC-2026-1805"
+        ]
+      },
+      {
+        "name": "pyarrow",
+        "version": "19.0.1",
+        "advisory_ids": [
+          "PYSEC-2026-113"
+        ]
+      },
+      {
+        "name": "python-dotenv",
+        "version": "1.1.0",
+        "advisory_ids": [
+          "PYSEC-2026-2270"
+        ]
+      },
+      {
+        "name": "requests",
+        "version": "2.32.4",
+        "advisory_ids": [
+          "PYSEC-2026-2275"
+        ]
+      },
+      {
+        "name": "soupsieve",
+        "version": "2.7",
+        "advisory_ids": [
+          "PYSEC-2026-3071",
+          "PYSEC-2026-3072",
+          "PYSEC-2026-4170",
+          "PYSEC-2026-4171"
+        ]
+      },
+      {
+        "name": "streamlit",
+        "version": "1.44.1",
+        "advisory_ids": [
+          "PYSEC-2026-212",
+          "PYSEC-2026-2285"
+        ]
+      },
+      {
+        "name": "tornado",
+        "version": "6.5",
+        "advisory_ids": [
+          "GHSA-3hv7-mjh2-fv65",
+          "GHSA-8423-8fgw-73vq",
+          "GHSA-c2m8-h5v5-343r",
+          "GHSA-chx6-46f5-w4vp",
+          "GHSA-pw6j-qg29-8w7f",
+          "PYSEC-2025-265",
+          "PYSEC-2025-266",
+          "PYSEC-2025-267",
+          "PYSEC-2026-140",
+          "PYSEC-2026-2287",
+          "PYSEC-2026-3387",
+          "PYSEC-2026-3388",
+          "PYSEC-2026-3389",
+          "PYSEC-2026-3928"
+        ]
+      },
+      {
+        "name": "urllib3",
+        "version": "2.5.0",
+        "advisory_ids": [
+          "PYSEC-2026-141",
+          "PYSEC-2026-1994",
+          "PYSEC-2026-1996",
+          "PYSEC-2026-1998",
+          "PYSEC-2026-4175",
+          "PYSEC-2026-4177"
+        ]
+      },
+      {
+        "name": "yt-dlp",
+        "version": "2025.3.31",
+        "advisory_ids": [
+          "GHSA-69qj-pvh9-c5wg",
+          "PYSEC-2026-3430",
+          "PYSEC-2026-3431",
+          "PYSEC-2026-3432",
+          "PYSEC-2026-3433",
+          "PYSEC-2026-3622"
+        ]
+      }
+    ]
+  },
+  "after": {
+    "runtime": {
+      "packages_scanned": 55,
+      "findings": []
+    },
+    "optional_video": {
+      "packages_scanned": 69,
+      "findings": []
+    }
+  },
+  "github_open_alerts": [
+    {
+      "number": 160,
+      "package": "urllib3",
+      "ghsa": "GHSA-vxq7-64xx-v4gw",
+      "cve": "CVE-2026-97689",
+      "fixed": {
+        "identifier": "2.8.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 159,
+      "package": "urllib3",
+      "ghsa": "GHSA-8988-9cw3-xx77",
+      "cve": "CVE-2026-97687",
+      "fixed": {
+        "identifier": "2.8.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 158,
+      "package": "tornado",
+      "ghsa": "GHSA-3hv7-mjh2-fv65",
+      "cve": null,
+      "fixed": {
+        "identifier": "6.5.9"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 157,
+      "package": "tornado",
+      "ghsa": "GHSA-c2m8-h5v5-343r",
+      "cve": null,
+      "fixed": {
+        "identifier": "6.5.9"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 156,
+      "package": "tornado",
+      "ghsa": "GHSA-chx6-46f5-w4vp",
+      "cve": null,
+      "fixed": {
+        "identifier": "6.5.9"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 155,
+      "package": "GitPython",
+      "ghsa": "GHSA-59cr-6r3x-644w",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.62"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 154,
+      "package": "gitpython",
+      "ghsa": "GHSA-239g-whfq-7xj9",
+      "cve": "CVE-2026-87817",
+      "fixed": {
+        "identifier": "3.1.60"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 153,
+      "package": "GitPython",
+      "ghsa": "GHSA-g5vv-9gxw-82hx",
+      "cve": "CVE-2026-87819",
+      "fixed": {
+        "identifier": "3.1.60"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 152,
+      "package": "litellm",
+      "ghsa": "GHSA-3cv6-jpf6-8222",
+      "cve": "CVE-2026-84377",
+      "fixed": {
+        "identifier": "1.88.6"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 151,
+      "package": "GitPython",
+      "ghsa": "GHSA-rwj8-pgh3-r573",
+      "cve": "CVE-2026-67322",
+      "fixed": {
+        "identifier": "3.1.52"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 150,
+      "package": "GitPython",
+      "ghsa": "GHSA-94p4-4cq8-9g67",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.55"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 149,
+      "package": "anyio",
+      "ghsa": "GHSA-82r6-8w77-94w6",
+      "cve": "CVE-2026-63374",
+      "fixed": {
+        "identifier": "4.14.2"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 148,
+      "package": "anyio",
+      "ghsa": "GHSA-5p39-cfhj-2xmp",
+      "cve": "CVE-2026-64847",
+      "fixed": {
+        "identifier": "4.14.2"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 147,
+      "package": "soupsieve",
+      "ghsa": "GHSA-j934-xhv5-fg8f",
+      "cve": "CVE-2026-85999",
+      "fixed": {
+        "identifier": "2.9.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 146,
+      "package": "soupsieve",
+      "ghsa": "GHSA-gjv8-xp57-g29c",
+      "cve": "CVE-2026-86000",
+      "fixed": {
+        "identifier": "2.9.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 145,
+      "package": "litellm",
+      "ghsa": "GHSA-hx8v-g79f-8w5f",
+      "cve": "CVE-2026-59823",
+      "fixed": {
+        "identifier": "1.83.9"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 144,
+      "package": "litellm",
+      "ghsa": "GHSA-c693-x898-5g4h",
+      "cve": "CVE-2026-12798",
+      "fixed": null,
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 143,
+      "package": "litellm",
+      "ghsa": "GHSA-m2v5-74w2-qhcj",
+      "cve": "CVE-2026-12799",
+      "fixed": null,
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 142,
+      "package": "litellm",
+      "ghsa": "GHSA-p897-vf7j-f5h8",
+      "cve": "CVE-2026-12797",
+      "fixed": null,
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 141,
+      "package": "litellm",
+      "ghsa": "GHSA-w2mh-qq9q-453x",
+      "cve": "CVE-2026-12796",
+      "fixed": null,
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 140,
+      "package": "litellm",
+      "ghsa": "GHSA-j37q-q7p9-vpwm",
+      "cve": "CVE-2026-12795",
+      "fixed": null,
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 139,
+      "package": "litellm",
+      "ghsa": "GHSA-4jcj-7x88-m979",
+      "cve": "CVE-2026-12773",
+      "fixed": {
+        "identifier": "1.84.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 138,
+      "package": "litellm",
+      "ghsa": "GHSA-qmf3-4767-5fg3",
+      "cve": "CVE-2026-12771",
+      "fixed": null,
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 137,
+      "package": "litellm",
+      "ghsa": "GHSA-mf52-j94g-746m",
+      "cve": "CVE-2026-12772",
+      "fixed": null,
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 136,
+      "package": "GitPython",
+      "ghsa": "GHSA-3wxw-xv34-2frg",
+      "cve": "CVE-2026-78679",
+      "fixed": {
+        "identifier": "3.1.59"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 135,
+      "package": "GitPython",
+      "ghsa": "GHSA-284h-m62q-gf8w",
+      "cve": "CVE-2026-78676",
+      "fixed": {
+        "identifier": "3.1.59"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 134,
+      "package": "GitPython",
+      "ghsa": "GHSA-7833-fr7j-v32q",
+      "cve": "CVE-2026-78675",
+      "fixed": {
+        "identifier": "3.1.59"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 133,
+      "package": "GitPython",
+      "ghsa": "GHSA-5xxx-qhh7-9287",
+      "cve": "CVE-2026-78678",
+      "fixed": {
+        "identifier": "3.1.59"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 132,
+      "package": "GitPython",
+      "ghsa": "GHSA-8mcc-hrx5-hvxc",
+      "cve": "CVE-2026-78677",
+      "fixed": {
+        "identifier": "3.1.59"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 131,
+      "package": "litellm",
+      "ghsa": "GHSA-6wvf-77m9-58rm",
+      "cve": "CVE-2026-37004",
+      "fixed": {
+        "identifier": "1.83.7"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 130,
+      "package": "tornado",
+      "ghsa": "GHSA-mpf4-983q-p7j4",
+      "cve": "CVE-2026-82397",
+      "fixed": {
+        "identifier": "6.5.8"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 129,
+      "package": "tornado",
+      "ghsa": "GHSA-8423-8fgw-73vq",
+      "cve": null,
+      "fixed": {
+        "identifier": "6.5.8"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 128,
+      "package": "GitPython",
+      "ghsa": "GHSA-hmq2-w58f-27jc",
+      "cve": "CVE-2026-76222",
+      "fixed": {
+        "identifier": "3.1.58"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 127,
+      "package": "GitPython",
+      "ghsa": "GHSA-wvpp-8hx9-p66j",
+      "cve": "CVE-2026-76220",
+      "fixed": {
+        "identifier": "3.1.58"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 126,
+      "package": "GitPython",
+      "ghsa": "GHSA-jm78-9fvv-mhgr",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.58"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 125,
+      "package": "GitPython",
+      "ghsa": "GHSA-hh9p-6wh2-4mfc",
+      "cve": "CVE-2026-76217",
+      "fixed": {
+        "identifier": "3.1.58"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 124,
+      "package": "GitPython",
+      "ghsa": "GHSA-9rj7-rf2p-w77r",
+      "cve": "CVE-2026-76218",
+      "fixed": {
+        "identifier": "3.1.58"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 123,
+      "package": "GitPython",
+      "ghsa": "GHSA-4gmw-gg2m-w46p",
+      "cve": "CVE-2026-76219",
+      "fixed": {
+        "identifier": "3.1.58"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 122,
+      "package": "aiohttp",
+      "ghsa": "GHSA-cq5v-8q36-5273",
+      "cve": "CVE-2026-69244",
+      "fixed": {
+        "identifier": "3.14.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 121,
+      "package": "aiohttp",
+      "ghsa": "GHSA-mfx4-hv73-q22v",
+      "cve": "CVE-2026-69243",
+      "fixed": {
+        "identifier": "3.14.2"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 120,
+      "package": "aiohttp",
+      "ghsa": "GHSA-mq44-7p77-q5h7",
+      "cve": "CVE-2026-59881",
+      "fixed": {
+        "identifier": "3.14.2"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 119,
+      "package": "GitPython",
+      "ghsa": "GHSA-p538-c434-8v24",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.56"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 118,
+      "package": "GitPython",
+      "ghsa": "GHSA-539m-9xh6-q6rr",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.57"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 117,
+      "package": "GitPython",
+      "ghsa": "GHSA-3f7w-8rr8-f37f",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.57"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 116,
+      "package": "black",
+      "ghsa": "GHSA-3936-cmfr-pm3m",
+      "cve": "CVE-2026-32274",
+      "fixed": {
+        "identifier": "26.3.1"
+      },
+      "manifest": "requirements_dev.txt"
+    },
+    {
+      "number": 114,
+      "package": "yt-dlp",
+      "ghsa": "GHSA-6v4j-43gg-vj32",
+      "cve": "CVE-2026-55404",
+      "fixed": {
+        "identifier": "2026.7.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 113,
+      "package": "GitPython",
+      "ghsa": "GHSA-fjr4-x663-mwxc",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.54"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 112,
+      "package": "GitPython",
+      "ghsa": "GHSA-r9mr-m37c-5fr3",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.54"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 111,
+      "package": "GitPython",
+      "ghsa": "GHSA-6p8h-3wgx-97gf",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.54"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 110,
+      "package": "gitpython",
+      "ghsa": "GHSA-3rp5-jjmw-4wv2",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.53"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 109,
+      "package": "litellm",
+      "ghsa": "GHSA-7488-6r32-c95q",
+      "cve": "CVE-2026-59822",
+      "fixed": {
+        "identifier": "1.84.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 108,
+      "package": "litellm",
+      "ghsa": "GHSA-4g5m-c9r5-49xf",
+      "cve": "CVE-2026-59819",
+      "fixed": {
+        "identifier": "1.83.10"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 107,
+      "package": "litellm",
+      "ghsa": "GHSA-72m8-9m7m-h278",
+      "cve": "CVE-2026-59821",
+      "fixed": {
+        "identifier": "1.82.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 106,
+      "package": "litellm",
+      "ghsa": "GHSA-5jmr-gcrj-2c9q",
+      "cve": "CVE-2026-59820",
+      "fixed": {
+        "identifier": "1.83.7"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 104,
+      "package": "GitPython",
+      "ghsa": "GHSA-956x-8gvw-wg5v",
+      "cve": "CVE-2026-67323",
+      "fixed": {
+        "identifier": "3.1.51"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 103,
+      "package": "GitPython",
+      "ghsa": "GHSA-2f96-g7mh-g2hx",
+      "cve": "CVE-2026-67325",
+      "fixed": {
+        "identifier": "3.1.51"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 102,
+      "package": "Pillow",
+      "ghsa": "GHSA-jjj6-mw9f-p565",
+      "cve": "CVE-2026-59200",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 101,
+      "package": "Pillow",
+      "ghsa": "GHSA-fj7v-r99m-22gq",
+      "cve": "CVE-2026-59198",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 100,
+      "package": "pillow",
+      "ghsa": "GHSA-vjc4-5qp5-m44j",
+      "cve": "CVE-2026-59204",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 99,
+      "package": "pillow",
+      "ghsa": "GHSA-9hw9-ch79-4vh6",
+      "cve": "CVE-2026-59205",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 98,
+      "package": "Pillow",
+      "ghsa": "GHSA-xj96-63gp-2gmr",
+      "cve": "CVE-2026-59197",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 97,
+      "package": "Pillow",
+      "ghsa": "GHSA-6r8x-57c9-28j4",
+      "cve": "CVE-2026-59199",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 96,
+      "package": "Pillow",
+      "ghsa": "GHSA-4x4j-2g7c-83w6",
+      "cve": "CVE-2026-55798",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 95,
+      "package": "pillow",
+      "ghsa": "GHSA-phj9-mv4w-65pm",
+      "cve": "CVE-2026-55380",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 94,
+      "package": "pillow",
+      "ghsa": "GHSA-45hq-cxwh-f6vc",
+      "cve": "CVE-2026-55379",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 93,
+      "package": "pillow",
+      "ghsa": "GHSA-8v84-f9pq-wr9x",
+      "cve": "CVE-2026-54059",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 92,
+      "package": "pillow",
+      "ghsa": "GHSA-5x94-69rx-g8h2",
+      "cve": "CVE-2026-54060",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 91,
+      "package": "pillow",
+      "ghsa": "GHSA-62p4-gmf7-7g93",
+      "cve": "CVE-2026-54058",
+      "fixed": {
+        "identifier": "12.3.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 90,
+      "package": "tornado",
+      "ghsa": "GHSA-jhmp-mqwm-3gq8",
+      "cve": "CVE-2025-67726",
+      "fixed": {
+        "identifier": "6.5.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 89,
+      "package": "tornado",
+      "ghsa": "GHSA-c98p-7wgm-6p64",
+      "cve": "CVE-2025-67725",
+      "fixed": {
+        "identifier": "6.5.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 88,
+      "package": "tornado",
+      "ghsa": "GHSA-pr2v-jx2c-wg9f",
+      "cve": "CVE-2025-67724",
+      "fixed": {
+        "identifier": "6.5.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 87,
+      "package": "streamlit",
+      "ghsa": "GHSA-vqwp-45wm-r9r5",
+      "cve": "CVE-2026-10804",
+      "fixed": {
+        "identifier": "1.53.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 86,
+      "package": "soupsieve",
+      "ghsa": "GHSA-2wc2-fm75-p42x",
+      "cve": "CVE-2026-49476",
+      "fixed": {
+        "identifier": "2.8.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 85,
+      "package": "soupsieve",
+      "ghsa": "GHSA-836r-79rf-4m37",
+      "cve": "CVE-2026-49477",
+      "fixed": {
+        "identifier": "2.8.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 84,
+      "package": "litellm",
+      "ghsa": "GHSA-wpfp-gwwc-vwq6",
+      "cve": "CVE-2026-47102",
+      "fixed": {
+        "identifier": "1.83.10"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 83,
+      "package": "litellm",
+      "ghsa": "GHSA-qrc4-49gv-mv9m",
+      "cve": "CVE-2026-47101",
+      "fixed": {
+        "identifier": "1.83.14"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 82,
+      "package": "litellm",
+      "ghsa": "GHSA-4xpc-pv4p-pm3w",
+      "cve": "CVE-2026-49468",
+      "fixed": {
+        "identifier": "1.84.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 81,
+      "package": "yt-dlp",
+      "ghsa": "GHSA-69qj-pvh9-c5wg",
+      "cve": null,
+      "fixed": {
+        "identifier": "2026.6.9"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 80,
+      "package": "yt-dlp",
+      "ghsa": "GHSA-vx4q-3cr2-7cg2",
+      "cve": "CVE-2026-50574",
+      "fixed": {
+        "identifier": "2026.6.9"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 79,
+      "package": "yt-dlp",
+      "ghsa": "GHSA-c6mh-fpjc-4pr3",
+      "cve": "CVE-2026-50023",
+      "fixed": {
+        "identifier": "2026.6.9"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 78,
+      "package": "yt-dlp",
+      "ghsa": "GHSA-f7j3-774f-rfhj",
+      "cve": "CVE-2026-50019",
+      "fixed": {
+        "identifier": "2026.6.9"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 77,
+      "package": "tornado",
+      "ghsa": "GHSA-pw6j-qg29-8w7f",
+      "cve": null,
+      "fixed": {
+        "identifier": "6.5.7"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 76,
+      "package": "tornado",
+      "ghsa": "GHSA-3x9g-8vmp-wqvf",
+      "cve": "CVE-2026-49853",
+      "fixed": {
+        "identifier": "6.5.6"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 75,
+      "package": "tornado",
+      "ghsa": "GHSA-mgf9-4vpg-hj56",
+      "cve": "CVE-2026-49855",
+      "fixed": {
+        "identifier": "6.5.6"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 74,
+      "package": "aiohttp",
+      "ghsa": "GHSA-4m7w-qmgq-4wj5",
+      "cve": "CVE-2026-54275",
+      "fixed": {
+        "identifier": "3.14.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 73,
+      "package": "aiohttp",
+      "ghsa": "GHSA-xcgm-r5h9-7989",
+      "cve": "CVE-2026-54274",
+      "fixed": {
+        "identifier": "3.14.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 72,
+      "package": "aiohttp",
+      "ghsa": "GHSA-hpj7-wq8m-9hgp",
+      "cve": "CVE-2026-54276",
+      "fixed": {
+        "identifier": "3.14.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 71,
+      "package": "aiohttp",
+      "ghsa": "GHSA-4fvr-rgm6-gqmc",
+      "cve": "CVE-2026-54273",
+      "fixed": {
+        "identifier": "3.14.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 70,
+      "package": "aiohttp",
+      "ghsa": "GHSA-9x8q-7h8h-wcw9",
+      "cve": "CVE-2026-54280",
+      "fixed": {
+        "identifier": "3.14.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 69,
+      "package": "aiohttp",
+      "ghsa": "GHSA-63hw-fmq6-xxg2",
+      "cve": "CVE-2026-54277",
+      "fixed": {
+        "identifier": "3.14.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 68,
+      "package": "aiohttp",
+      "ghsa": "GHSA-g3cq-j2xw-wf74",
+      "cve": "CVE-2026-54278",
+      "fixed": {
+        "identifier": "3.14.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 67,
+      "package": "aiohttp",
+      "ghsa": "GHSA-2fqr-mr3j-6wp8",
+      "cve": "CVE-2026-54279",
+      "fixed": {
+        "identifier": "3.14.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 66,
+      "package": "aiohttp",
+      "ghsa": "GHSA-m6qw-4cw2-hm4m",
+      "cve": "CVE-2026-50269",
+      "fixed": {
+        "identifier": "3.14.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 65,
+      "package": "tornado",
+      "ghsa": "GHSA-cx3h-4qpv-8hc9",
+      "cve": "CVE-2026-49854",
+      "fixed": {
+        "identifier": "6.5.6"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 64,
+      "package": "pyarrow",
+      "ghsa": "GHSA-rgxp-2hwp-jwgg",
+      "cve": "CVE-2026-25087",
+      "fixed": {
+        "identifier": "23.0.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 63,
+      "package": "aiohttp",
+      "ghsa": "GHSA-hg6j-4rv6-33pg",
+      "cve": "CVE-2026-47265",
+      "fixed": {
+        "identifier": "3.14.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 62,
+      "package": "aiohttp",
+      "ghsa": "GHSA-jg22-mg44-37j8",
+      "cve": "CVE-2026-34993",
+      "fixed": {
+        "identifier": "3.14.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 61,
+      "package": "idna",
+      "ghsa": "GHSA-65pc-fj4g-8rjx",
+      "cve": "CVE-2026-45409",
+      "fixed": {
+        "identifier": "3.15"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 60,
+      "package": "urllib3",
+      "ghsa": "GHSA-qccp-gfcp-xxvc",
+      "cve": "CVE-2026-44431",
+      "fixed": {
+        "identifier": "2.7.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 59,
+      "package": "GitPython",
+      "ghsa": "GHSA-mv93-w799-cj2w",
+      "cve": null,
+      "fixed": {
+        "identifier": "3.1.50"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 58,
+      "package": "GitPython",
+      "ghsa": "GHSA-v87r-6q3f-2j67",
+      "cve": "CVE-2026-44244",
+      "fixed": {
+        "identifier": "3.1.49"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 57,
+      "package": "GitPython",
+      "ghsa": "GHSA-7545-fcxq-7j24",
+      "cve": "CVE-2026-44243",
+      "fixed": {
+        "identifier": "3.1.48"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 56,
+      "package": "pillow",
+      "ghsa": "GHSA-r73j-pqj5-w3x7",
+      "cve": "CVE-2026-42310",
+      "fixed": {
+        "identifier": "12.2.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 55,
+      "package": "pillow",
+      "ghsa": "GHSA-wjx4-4jcj-g98j",
+      "cve": "CVE-2026-42308",
+      "fixed": {
+        "identifier": "12.2.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 54,
+      "package": "pillow",
+      "ghsa": "GHSA-pwv6-vv43-88gr",
+      "cve": "CVE-2026-42311",
+      "fixed": {
+        "identifier": "12.2.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 53,
+      "package": "pillow",
+      "ghsa": "GHSA-5xmw-vc9v-4wf2",
+      "cve": "CVE-2026-42309",
+      "fixed": {
+        "identifier": "12.2.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 52,
+      "package": "GitPython",
+      "ghsa": "GHSA-x2qx-6953-8485",
+      "cve": "CVE-2026-42284",
+      "fixed": {
+        "identifier": "3.1.47"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 51,
+      "package": "GitPython",
+      "ghsa": "GHSA-rpm5-65cw-6hj4",
+      "cve": "CVE-2026-42215",
+      "fixed": {
+        "identifier": "3.1.47"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 50,
+      "package": "python-dotenv",
+      "ghsa": "GHSA-mf9w-mj56-hr94",
+      "cve": "CVE-2026-28684",
+      "fixed": {
+        "identifier": "1.2.2"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 49,
+      "package": "pillow",
+      "ghsa": "GHSA-whj4-6x5x-4v2j",
+      "cve": "CVE-2026-40192",
+      "fixed": {
+        "identifier": "12.2.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 48,
+      "package": "pytest",
+      "ghsa": "GHSA-6w46-j5rx-g56g",
+      "cve": "CVE-2025-71176",
+      "fixed": {
+        "identifier": "9.0.3"
+      },
+      "manifest": "requirements_dev.txt"
+    },
+    {
+      "number": 47,
+      "package": "litellm",
+      "ghsa": "GHSA-69x8-hrgq-fjj8",
+      "cve": null,
+      "fixed": {
+        "identifier": "1.83.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 46,
+      "package": "tornado",
+      "ghsa": "GHSA-fqwm-6jpj-5wxc",
+      "cve": "CVE-2026-35536",
+      "fixed": {
+        "identifier": "6.5.5"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 45,
+      "package": "litellm",
+      "ghsa": "GHSA-jjhc-v7c2-5hh6",
+      "cve": "CVE-2026-35030",
+      "fixed": {
+        "identifier": "1.83.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 44,
+      "package": "litellm",
+      "ghsa": "GHSA-53mr-6c8q-9789",
+      "cve": "CVE-2026-35029",
+      "fixed": {
+        "identifier": "1.83.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 43,
+      "package": "aiohttp",
+      "ghsa": "GHSA-c427-h43c-vf67",
+      "cve": "CVE-2026-34525",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 42,
+      "package": "aiohttp",
+      "ghsa": "GHSA-63hf-3vf5-4wqf",
+      "cve": "CVE-2026-34520",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 41,
+      "package": "aiohttp",
+      "ghsa": "GHSA-mwh4-6h8g-pg8w",
+      "cve": "CVE-2026-34519",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 40,
+      "package": "aiohttp",
+      "ghsa": "GHSA-966j-vmvw-g2g9",
+      "cve": "CVE-2026-34518",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 39,
+      "package": "aiohttp",
+      "ghsa": "GHSA-3wq7-rqq7-wx6j",
+      "cve": "CVE-2026-34517",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 38,
+      "package": "aiohttp",
+      "ghsa": "GHSA-m5qp-6w8w-w647",
+      "cve": "CVE-2026-34516",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 37,
+      "package": "aiohttp",
+      "ghsa": "GHSA-p998-jp59-783m",
+      "cve": "CVE-2026-34515",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 36,
+      "package": "aiohttp",
+      "ghsa": "GHSA-2vrm-gr82-f7m5",
+      "cve": "CVE-2026-34514",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 35,
+      "package": "aiohttp",
+      "ghsa": "GHSA-hcc4-c3v8-rx92",
+      "cve": "CVE-2026-34513",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 34,
+      "package": "aiohttp",
+      "ghsa": "GHSA-w2fm-2cpv-w7v5",
+      "cve": "CVE-2026-22815",
+      "fixed": {
+        "identifier": "3.13.4"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 33,
+      "package": "requests",
+      "ghsa": "GHSA-gc5v-m9x4-r6x2",
+      "cve": "CVE-2026-25645",
+      "fixed": {
+        "identifier": "2.33.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 32,
+      "package": "Streamlit",
+      "ghsa": "GHSA-7p48-42j8-8846",
+      "cve": "CVE-2026-33682",
+      "fixed": {
+        "identifier": "1.54.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 31,
+      "package": "CairoSVG",
+      "ghsa": "GHSA-f38f-5xpm-9r7c",
+      "cve": "CVE-2026-31899",
+      "fixed": {
+        "identifier": "2.9.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 29,
+      "package": "tornado",
+      "ghsa": "GHSA-qjxf-f2mg-c6mc",
+      "cve": "CVE-2026-31958",
+      "fixed": {
+        "identifier": "6.5.5"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 28,
+      "package": "tornado",
+      "ghsa": "GHSA-78cv-mqj4-43f7",
+      "cve": null,
+      "fixed": {
+        "identifier": "6.5.5"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 27,
+      "package": "yt-dlp",
+      "ghsa": "GHSA-g3gw-q23r-pgqm",
+      "cve": "CVE-2026-26331",
+      "fixed": {
+        "identifier": "2026.02.21"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 26,
+      "package": "pillow",
+      "ghsa": "GHSA-cfh3-3jmp-rvhc",
+      "cve": "CVE-2026-25990",
+      "fixed": {
+        "identifier": "12.1.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 25,
+      "package": "protobuf",
+      "ghsa": "GHSA-7gcm-g887-7qv7",
+      "cve": "CVE-2026-0994",
+      "fixed": {
+        "identifier": "5.29.6"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 23,
+      "package": "filelock",
+      "ghsa": "GHSA-qmgc-5h2g-mvrw",
+      "cve": "CVE-2026-22701",
+      "fixed": {
+        "identifier": "3.20.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 22,
+      "package": "urllib3",
+      "ghsa": "GHSA-38jv-5279-wg99",
+      "cve": "CVE-2026-21441",
+      "fixed": {
+        "identifier": "2.6.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 21,
+      "package": "aiohttp",
+      "ghsa": "GHSA-fh55-r93g-j68g",
+      "cve": "CVE-2025-69230",
+      "fixed": {
+        "identifier": "3.13.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 20,
+      "package": "aiohttp",
+      "ghsa": "GHSA-g84x-mcqj-x9qq",
+      "cve": "CVE-2025-69229",
+      "fixed": {
+        "identifier": "3.13.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 19,
+      "package": "aiohttp",
+      "ghsa": "GHSA-6jhg-hg63-jvvf",
+      "cve": "CVE-2025-69228",
+      "fixed": {
+        "identifier": "3.13.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 18,
+      "package": "aiohttp",
+      "ghsa": "GHSA-jj3x-wxrx-4x23",
+      "cve": "CVE-2025-69227",
+      "fixed": {
+        "identifier": "3.13.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 17,
+      "package": "aiohttp",
+      "ghsa": "GHSA-54jq-c3m8-4m76",
+      "cve": "CVE-2025-69226",
+      "fixed": {
+        "identifier": "3.13.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 16,
+      "package": "aiohttp",
+      "ghsa": "GHSA-mqqc-3gqh-h2x8",
+      "cve": "CVE-2025-69225",
+      "fixed": {
+        "identifier": "3.13.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 15,
+      "package": "aiohttp",
+      "ghsa": "GHSA-69f9-5gxw-wvc2",
+      "cve": "CVE-2025-69224",
+      "fixed": {
+        "identifier": "3.13.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 14,
+      "package": "aiohttp",
+      "ghsa": "GHSA-6mq8-rvhq-8wgg",
+      "cve": "CVE-2025-69223",
+      "fixed": {
+        "identifier": "3.13.3"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 13,
+      "package": "filelock",
+      "ghsa": "GHSA-w853-jp5j-5j7f",
+      "cve": "CVE-2025-68146",
+      "fixed": {
+        "identifier": "3.20.1"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 12,
+      "package": "urllib3",
+      "ghsa": "GHSA-2xpw-w6gg-jr37",
+      "cve": "CVE-2025-66471",
+      "fixed": {
+        "identifier": "2.6.0"
+      },
+      "manifest": "requirements.txt"
+    },
+    {
+      "number": 11,
+      "package": "urllib3",
+      "ghsa": "GHSA-gm62-xv2j-4w53",
+      "cve": "CVE-2025-66418",
+      "fixed": {
+        "identifier": "2.6.0"
+      },
+      "manifest": "requirements.txt"
+    }
+  ]
+}

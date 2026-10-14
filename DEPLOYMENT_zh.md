@@ -12,7 +12,7 @@ DeepReader 是一个基于人工智能的系统，用于生成全面的书评和
 - **视频处理**: 额外需要 10GB 临时存储空间
 
 ### 软件要求
-- Python 3.9+（推荐 Python 3.12+）
+- Python 3.12+
 - pip 或 conda 包管理器
 - Git
 - 互联网连接（用于 API 调用和网页爬取）
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 # 必需的 API 配置
 OPENAI_API_KEY=你的_openai_api_密钥
 OPENAI_BASE_URL=https://api.openai.com/v1
-DEEPREADER_MODEL_NAME=gpt-4
+DEEPREADER_MODEL_NAME=gpt-4.1
 
 # 可选：其他 API 提供商
 # OPENAI_BASE_URL=https://api.deepseek.com/v1
@@ -81,7 +81,7 @@ chmod +x font-install.sh
 
 ```bash
 # 启动 Web 界面
-streamlit run website/chatbot.py
+streamlit run website/Home.py
 
 # 应用将在 http://localhost:8501 可用
 ```
@@ -95,7 +95,7 @@ streamlit run website/chatbot.py
 pip install streamlit
 
 # 使用生产设置运行
-streamlit run website/chatbot.py --server.port 8501 --server.address 0.0.0.0
+streamlit run website/Home.py --server.port 8501 --server.address 0.0.0.0
 ```
 
 #### 方法 2: Docker 部署
@@ -125,7 +125,7 @@ COPY . .
 EXPOSE 8501
 
 # 运行应用
-CMD ["streamlit", "run", "website/chatbot.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+CMD ["streamlit", "run", "website/Home.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
 ```
 
 构建和运行：
@@ -147,7 +147,7 @@ docker run -p 8501:8501 --env-file .env deepreader
 4. 自动部署
 
 ##### 其他云平台
-- **Heroku**: 使用 `Procfile`，内容为 `web: streamlit run website/chatbot.py --server.port $PORT`
+- **Heroku**: 使用 `Procfile`，内容为 `web: streamlit run website/Home.py --server.port $PORT`
 - **AWS/GCP/Azure**: 使用上述 Docker 镜像的容器服务
 
 ## 配置
@@ -159,7 +159,7 @@ docker run -p 8501:8501 --env-file .env deepreader
 1. **OpenAI GPT 模型**:
    ```bash
    OPENAI_BASE_URL=https://api.openai.com/v1
-   DEEPREADER_MODEL_NAME=gpt-4
+   DEEPREADER_MODEL_NAME=gpt-4.1
    ```
 
 2. **DeepSeek（推荐，成本效益高）**:

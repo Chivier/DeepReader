@@ -1,6 +1,6 @@
-import nerif
+from reader.llm import SimpleChatModel
 import os
-model_name = "gpt-4o-mini"
+model_name = os.getenv("DEEPREADER_REVIEW_MODEL") or os.getenv("DEEPREADER_MODEL_NAME", "gpt-4.1")
 
 def clean_video(file_name):
     with open(file_name, "r") as f:
@@ -20,7 +20,7 @@ Text: {text}
 
 Fixed Text:
     """
-    model = nerif.model.SimpleChatModel(model_name)
+    model = SimpleChatModel(model_name)
     response = model.chat(prompt)
     
     # print(response)

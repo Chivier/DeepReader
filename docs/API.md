@@ -39,7 +39,7 @@ python reader/main.py --book "三体"
 ### Starting the Server
 
 ```bash
-streamlit run website/chatbot.py
+streamlit run website/Home.py
 ```
 
 ### Features
@@ -57,7 +57,7 @@ streamlit run website/chatbot.py
 from reader.douban_crawler import DoubanBookSpider
 
 spider = DoubanBookSpider()
-spider.crawl_book("书名", count=1)
+spider.crawl_book("书名", limit=1)
 ```
 
 ### Bilibili Auto Crawler

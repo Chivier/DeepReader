@@ -1,13 +1,13 @@
-import nerif
+from reader.llm import SimpleChatModel
 import os
 import pandas as pd
 import json
 
 # model_name = "openrouter/deepseek/deepseek-r1"
-model_name = "openrouter/anthropic/claude-3.7-sonnet"
+model_name = os.getenv("DEEPREADER_REVIEW_MODEL") or os.getenv("DEEPREADER_MODEL_NAME", "gpt-4.1")
 # model_name = "ollama/deepseek-r1:32b"
 
-model = nerif.model.SimpleChatModel(model_name)
+model = SimpleChatModel(model_name)
 
 prompt_story = """帮我从书评中找到这本书的剧情部分。请严格遵循以下规则：
 - 输出所有和剧情部分相关的句子
@@ -81,13 +81,13 @@ def parse_reviews(book_path="example_book"):
     # - evaluation
     # - thinking
 
-    log_file = "log.txt"
+    log_file = os.path.join(book_path, "parse.log")
     
     # read all files in the douban_folder
     if os.path.exists(douban_folder):
         for file in os.listdir(douban_folder):
             if file.endswith("cleaned.txt"):
-                review_id = file.split("_cleaned.txt")[0]
+                review_id = file.split("_cleaned.txt")[0].removeprefix("douban_").removeprefix("ytb_").removeprefix("bilibili_")
                 review_url = f"https://book.douban.com/review/{review_id}/"
                 file_path = os.path.join(douban_folder, file)
                 story, feeling, evaluation, thinking = review_parser(file_path)
@@ -108,7 +108,7 @@ def parse_reviews(book_path="example_book"):
     if os.path.exists(video_folder):
         for file in os.listdir(video_folder):
             if file.endswith("cleaned.txt"):
-                review_id = file.split("_cleaned.txt")[0]
+                review_id = file.split("_cleaned.txt")[0].removeprefix("douban_").removeprefix("ytb_").removeprefix("bilibili_")
                 if file.startswith("ytb_"):
                     source = "youtube"
                     review_url = f"https://www.youtube.com/watch?v={review_id}"

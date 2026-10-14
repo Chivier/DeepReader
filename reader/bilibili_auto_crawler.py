@@ -212,7 +212,8 @@ class BilibiliAutoCrawler:
             'writesubtitles': True,  # 下载字幕
             'writeautomaticsub': True,  # 下载自动生成的字幕
             'subtitleslangs': ['zh-CN', 'zh-Hans', 'zh'],  # 中文字幕
-            'ignoreerrors': True,  # 忽略错误继续下载
+            'ignoreerrors': False,
+            'socket_timeout': 30,
         }
         
         print(f"开始下载前 {min(max_videos, len(videos))} 个视频...")
@@ -222,10 +223,11 @@ class BilibiliAutoCrawler:
                 print(f"正在下载第 {i+1} 个视频: {video['title']}")
                 
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    ydl.download([video['url']])
+                    if ydl.download([video['url']]) != 0:
+                        raise RuntimeError('视频下载未成功')
                 
                 # 记录下载信息
-                info_file = f"{download_dir}/video_{i+1}_info.json"
+                info_file = f"{download_dir}/video_{video['bvid']}_info.json"
                 with open(info_file, 'w', encoding='utf-8') as f:
                     json.dump(video, f, ensure_ascii=False, indent=2)
                 
@@ -359,7 +361,7 @@ class BilibiliAutoCrawler:
         print(f"视频链接文件已创建: {links_file}")
         return links_file
 
-def auto_process_book_videos(book_name: str, download_videos: bool = True, max_videos: int = 3) -> Dict:
+def auto_process_book_videos(book_name: str, download_videos: bool = True, max_videos: int = 3, output_dir: str = None) -> Dict:
     """
     自动处理书籍相关视频的完整流程
     
@@ -387,7 +389,8 @@ def auto_process_book_videos(book_name: str, download_videos: bool = True, max_v
         
         # 2. 创建链接文件
         print("📝 创建视频链接文件...")
-        links_file = crawler.create_video_links_file(videos, book_name)
+        destination = output_dir or book_name
+        links_file = crawler.create_video_links_file(videos, destination)
         
         result = {
             'success': True,
@@ -399,13 +402,13 @@ def auto_process_book_videos(book_name: str, download_videos: bool = True, max_v
         # 3. 下载视频（可选）
         if download_videos:
             print("⬇️ 开始下载视频...")
-            downloaded_files = crawler.download_videos(videos, book_name, max_videos)
+            downloaded_files = crawler.download_videos(videos, destination, max_videos)
             result['downloaded_files'] = downloaded_files
             result['downloaded_count'] = len(downloaded_files)
             
             # 4. 提取字幕
             print("📄 提取字幕文本...")
-            subtitle_text = crawler.extract_subtitles_text(book_name)
+            subtitle_text = crawler.extract_subtitles_text(destination)
             result['subtitle_text'] = subtitle_text
             result['has_subtitles'] = bool(subtitle_text)
         

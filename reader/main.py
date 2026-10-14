@@ -1,15 +1,39 @@
+import sys
+from pathlib import Path
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from reader.paths import book_directory, validate_book_name
 import time
-import douban_crawler
-import video_crawler
-import douban_cleaning
-import video_cleaning
-from parse_review import parse_reviews
-import report
-from bilibili_auto_crawler import auto_process_book_videos
+from reader import douban_crawler
+from reader import video_crawler
+from reader import douban_cleaning
+from reader import video_cleaning
+from reader.parse_review import parse_reviews
+from reader import report
+from reader.bilibili_auto_crawler import auto_process_book_videos
 
 import threading
 import os
 import argparse
+
+def parse_bool(value):
+    value = value.lower()
+    if value in {"true", "1", "yes"}:
+        return True
+    if value in {"false", "0", "no"}:
+        return False
+    raise argparse.ArgumentTypeError("Expected true or false")
+
+
+class PipelineThread(threading.Thread):
+    error = None
+
+    def run(self):
+        try:
+            super().run()
+        except Exception as exc:
+            self.error = exc
+
 
 def show_waiting_animation(thread):
     dots = 0
@@ -20,6 +44,9 @@ def show_waiting_animation(thread):
         if dots >= 6:
             print("\r" + " " * 6 + "\r", end="", flush=True)
             dots = 0
+    thread.join()
+    if thread.error is not None:
+        raise thread.error
 
 def main():
     parser = argparse.ArgumentParser(description="DeepReader - AI书评生成系统")
@@ -30,7 +57,7 @@ def main():
     # book name
     parser.add_argument("--book", type=str, required=True, help="书籍名称")
     # auto mode
-    parser.add_argument("--auto", type=bool, default=False, help="自动模式")
+    parser.add_argument("--auto", type=parse_bool, default=False, help="自动模式")
     # auto video search
     parser.add_argument("--auto-video", action="store_true", help="自动搜索Bilibili视频")
     # max videos to download
@@ -39,7 +66,12 @@ def main():
     
     douban_count = args.douban
     video_url_file = args.video
-    book_name = args.book
+    try:
+        title = validate_book_name(args.book)
+    except ValueError as exc:
+        parser.error(str(exc))
+    book_name = str(book_directory(title))
+    os.makedirs(book_name, exist_ok=True)
     auto = args.auto
     
     # -----------------------------------------------------
@@ -56,7 +88,8 @@ def main():
             
             def auto_video_process():
                 result = auto_process_book_videos(
-                    book_name, 
+                    title,
+                    output_dir=book_name,
                     download_videos=True, 
                     max_videos=args.max_videos
                 )
@@ -64,7 +97,7 @@ def main():
             
             # Start auto video processing in a thread
             print("Auto video processing", end="", flush=True)
-            auto_thread = threading.Thread(target=auto_video_process)
+            auto_thread = PipelineThread(target=auto_video_process)
             auto_thread.start()
             
             show_waiting_animation(auto_thread)
@@ -84,7 +117,7 @@ def main():
             print("Spider is working", end="", flush=True)
             video_spider = video_crawler.VideoCrawler(book_name)
             # Start the crawling process in a thread
-            crawl_thread = threading.Thread(target=video_spider.process_video_urls, args=(video_url_file,))
+            crawl_thread = PipelineThread(target=video_spider.process_video_urls, args=(video_url_file,))
             crawl_thread.start()
             
             # Show animation while the thread is running
@@ -105,7 +138,7 @@ def main():
         print(f"Cleaning {book_name} from video, please wait...")
         print("Cleaning in progress", end="", flush=True)
         # Start the cleaning process in a thread
-        clean_thread = threading.Thread(target=video_cleaning.clean_all_video_files, args=(book_name + "/video",))
+        clean_thread = PipelineThread(target=video_cleaning.clean_all_video_files, args=(book_name + "/video",))
         clean_thread.start()
         
         show_waiting_animation(clean_thread)
@@ -125,7 +158,7 @@ def main():
         print("Spider is working", end="", flush=True)
         douban_spider = douban_crawler.DoubanBookSpider()
         # Start the crawling process
-        crawl_thread = threading.Thread(target=douban_spider.crawl_book, args=(book_name, douban_count))
+        crawl_thread = PipelineThread(target=douban_spider.crawl_book, args=(title, douban_count, book_name))
         crawl_thread.start()
         
         show_waiting_animation(crawl_thread)
@@ -143,7 +176,7 @@ def main():
         print(f"Cleaning {book_name} from douban, please wait...")
         print("Cleaning in progress", end="", flush=True)
         # Start the cleaning process in a thread
-        clean_thread = threading.Thread(target=douban_cleaning.clean_all_douban_files, args=(book_name + "/website",))
+        clean_thread = PipelineThread(target=douban_cleaning.clean_all_douban_files, args=(book_name + "/website",))
         clean_thread.start()
         
         # Show animation while the thread is running
@@ -162,7 +195,7 @@ def main():
         print(f"Parsing {book_name} reviews, please wait...")
         print("Parsing in progress", end="", flush=True)
         # Start the parsing process in a thread
-        parse_thread = threading.Thread(target=parse_reviews, args=(book_name,))
+        parse_thread = PipelineThread(target=parse_reviews, args=(book_name,))
         parse_thread.start()
         
         # Show animation while the thread is running
@@ -181,7 +214,7 @@ def main():
         print(f"Generating report for {book_name}, please wait...")
         print("Report generation in progress", end="", flush=True)
         # Start the report generation process in a thread
-        report_thread = threading.Thread(target=report.report_parser, args=(book_name,))
+        report_thread = PipelineThread(target=report.report_parser, args=(book_name,))
         report_thread.start()
         
         # Show animation while the thread is running

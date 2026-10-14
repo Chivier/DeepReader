@@ -7,16 +7,9 @@ set -e
 
 echo "🚀 Setting up DeepReader development environment..."
 
-# Check Python version
-python_version=$(python3 --version 2>/dev/null | cut -d' ' -f2 | cut -d'.' -f1-2)
-required_version="3.9"
-
-if ! command -v python3 &> /dev/null; then
-    echo "❌ Python 3 is not installed. Please install Python 3.9 or higher."
-    exit 1
-fi
-
-echo "✅ Python version: $(python3 --version)"
+project_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$project_dir"
+python3 -c 'import sys; assert sys.version_info >= (3, 12), "Python 3.12+ required"'
 
 # Create virtual environment
 if [ ! -d "deepreader-env" ]; then
@@ -49,36 +42,9 @@ mkdir -p website/bookmarks
 mkdir -p website/book_prompt
 mkdir -p logs
 
-# Set up pre-commit hooks (if available)
-if command -v pre-commit &> /dev/null; then
-    echo "🪝 Setting up pre-commit hooks..."
-    pre-commit install
-fi
-
-# Check for environment file
 if [ ! -f ".env" ]; then
-    echo "⚠️ Creating .env template..."
-    cat > .env << EOF
-# OpenAI API Configuration
-OPENAI_API_KEY=your_api_key_here
-OPENAI_BASE_URL=https://api.openai.com/v1
-DEEPREADER_MODEL_NAME=gpt-4
-
-# Optional: Alternative API providers
-# OPENAI_BASE_URL=https://api.deepseek.com/v1
-# DEEPREADER_MODEL_NAME=deepseek-chat
-
-# Environment
-ENVIRONMENT=development
-EOF
-    echo "📝 Please edit .env file with your API keys"
-fi
-
-# Run font installation script
-if [ -f "font-install.sh" ]; then
-    echo "🔤 Installing fonts..."
-    chmod +x font-install.sh
-    ./font-install.sh
+    cp .env.example .env
+    echo "📝 Edit .env with your API key before generating content."
 fi
 
 echo ""
@@ -87,7 +53,7 @@ echo ""
 echo "📋 Next steps:"
 echo "1. Edit .env file with your API keys"
 echo "2. Activate the virtual environment: source deepreader-env/bin/activate"
-echo "3. Start the web interface: streamlit run website/chatbot.py"
+echo "3. Start the web interface: streamlit run website/Home.py"
 echo "4. Or run CLI: python reader/main.py --book \"书名\" --auto true"
 echo ""
 echo "📖 For more information, see:"
