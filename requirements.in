@@ -1,0 +1,11 @@
+# Direct runtime dependencies. Regenerate requirements.txt with uv pip compile.
+beautifulsoup4>=4.14,<5
+CairoSVG>=2.9.1,<3
+defusedxml>=0.7.1,<1
+openai>=3.31,<4
+pandas>=2.2,<4
+python-dotenv>=1.2.2,<2
+requests>=2.34.2,<3
+streamlit>=1.66,<2
+urllib3>=2.8.0,<3
+yt-dlp>=2026.8.19

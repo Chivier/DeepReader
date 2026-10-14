@@ -1,6 +1,6 @@
 import yt_dlp
-import whisper
 import os
+import re
 from urllib.parse import urlparse, parse_qs
 
 class VideoCrawler:
@@ -14,19 +14,17 @@ class VideoCrawler:
         """Extract video ID from YouTube or Bilibili URL"""
         parsed_url = urlparse(url)
         
-        if 'youtube.com' in parsed_url.netloc or 'youtu.be' in parsed_url.netloc:
-            if parsed_url.netloc == 'youtu.be':
-                return 'ytb_' + parsed_url.path[1:]
-            if 'watch' in parsed_url.path:
-                return 'ytb_' + parse_qs(parsed_url.query)['v'][0]
-        
-        elif 'bilibili.com' in parsed_url.netloc:
-            # Extract video ID from Bilibili URL
-            # Assuming URL format: https://www.bilibili.com/video/BV1xx411c7mD
-            if '/' == parsed_url.path[-1]:
-                parsed_url.path = parsed_url.path[:-1]
-            video_id = parsed_url.path.split('/')[-1]
-            return f'bilibili_{video_id}'
+        if parsed_url.scheme not in {'http', 'https'}:
+            return None
+        host = (parsed_url.hostname or '').lower()
+        if host in {'youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be'}:
+            video_id = parsed_url.path.strip('/') if host == 'youtu.be' else parse_qs(parsed_url.query).get('v', [''])[0]
+            if re.fullmatch(r'[A-Za-z0-9_-]{11}', video_id):
+                return 'ytb_' + video_id
+        elif host in {'bilibili.com', 'www.bilibili.com', 'm.bilibili.com'}:
+            match = re.fullmatch(r'/video/(BV[A-Za-z0-9]+|av\d+)/?', parsed_url.path)
+            if match:
+                return 'bilibili_' + match.group(1)
         
         return None
 
@@ -42,15 +40,15 @@ class VideoCrawler:
                 temp_video_directory = temp_video_path.rsplit('/', 1)[0]
                 temp_video_name = temp_video_path.rsplit('/', 1)[1]
                 cmd = ['lux', '-o', f"{temp_video_directory}", '-O', temp_video_name, url]
-                subprocess.run(cmd, check=True)
+                subprocess.run(cmd, check=True, timeout=600)
                 
                 # Convert to mp3 using ffmpeg
                 mp3_path = f"{temp_video_path}.mp3"
                 subprocess.run([
-                    'ffmpeg', '-i', f"{temp_video_path}.mp4",
+                    'ffmpeg', '-y', '-i', f"{temp_video_path}.mp4",
                     '-vn', '-acodec', 'libmp3lame', '-q:a', '2',
                     mp3_path
-                ], check=True)
+                ], check=True, timeout=600)
                 
                 # Clean up the video file
                 if os.path.exists(f"{temp_video_path}.mp4"):
@@ -65,8 +63,9 @@ class VideoCrawler:
         else:
             # Use yt-dlp for other sources
             ydl_opts = {
-                'format': 'mp4',
-                'outtmpl': temp_video_path,
+                'format': 'bestaudio/best',
+                'outtmpl': temp_video_path + '.%(ext)s',
+                'socket_timeout': 30,
                 'postprocessors': [{
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'mp3',
@@ -91,7 +90,10 @@ class VideoCrawler:
     def transcribe_audio(self, audio_path):
         """Transcribe audio using Whisper model"""
         try:
-            model = whisper.load_model("large-v3", device="cuda")
+            import whisper
+            import torch
+            device = os.getenv('WHISPER_DEVICE') or ('cuda' if torch.cuda.is_available() else 'cpu')
+            model = whisper.load_model(os.getenv('WHISPER_MODEL', 'base'), device=device)
             # Load and preprocess audio with Chinese language
             result = model.transcribe(audio_path, language="zh")
             print(result["text"])

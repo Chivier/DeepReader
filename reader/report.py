@@ -1,30 +1,33 @@
 import pandas as pd
 import os
-import nerif
+from reader.llm import SimpleChatModel
 
-smart_model_name = "google/gemini-2.5-pro-preview-03-25"
+smart_model_name = os.getenv("DEEPREADER_REPORT_MODEL") or os.getenv("DEEPREADER_MODEL_NAME", "gpt-4.1")
 
 def report_parser(book_name):
+    book_title = os.path.basename(os.path.normpath(book_name))
     file_path = f"{book_name}/parsed_data.csv"
     df = pd.read_csv(file_path)
-    smart_model = nerif.model.SimpleChatModel(model=smart_model_name)
+    if df.empty:
+        raise ValueError("没有可用的书评分析数据，请先采集并解析书评")
+    smart_model = SimpleChatModel(model=smart_model_name)
     
     story_prompt = f"""
-    你是一个书评专家，我们在讨论的书是{book_name}，以下是一些用户对这本书剧情的描述，
+    你是一个书评专家，我们在讨论的书是{book_title}，以下是一些用户对这本书剧情的描述，
     请根据这些描述，用 1000-2000 字描述这本书的剧情。
     
     """
     
     feeling_prompt = f"""
-    你是一个书评专家，我们在讨论的书是{book_name}，以下是一些用户对这本书的感受，
+    你是一个书评专家，我们在讨论的书是{book_title}，以下是一些用户对这本书的感受，
     """
     
     evaluation_prompt = f"""
-    你是一个书评专家，我们在讨论的书是{book_name}，以下是一些用户对这本书的评价，
+    你是一个书评专家，我们在讨论的书是{book_title}，以下是一些用户对这本书的评价，
     """
     
     thinking_prompt = f"""
-    你是一个书评专家，我们在讨论的书是{book_name}，以下是一些用户对这本书的思考，
+    你是一个书评专家，我们在讨论的书是{book_title}，以下是一些用户对这本书的思考，
     """
     
     
@@ -42,16 +45,16 @@ def report_parser(book_name):
         thinking_prompt = thinking_prompt + f"# {id} 的思考描述：{thinking}\n"
         
     story_response = smart_model.chat(story_prompt)
-    feeling_prompt = "我们今天来讨论一下 " + book_name + "，这本书大致说了：" + story_response + feeling_prompt + "请根据这些描述，用 2000-3000 字你阅读这本书的感受。"
-    evaluation_prompt = "我们今天来讨论一下 " + book_name + "，这本书大致说了：" + story_response + evaluation_prompt + "请根据这些描述，用 2000-3000 字你阅读这本书的评价。分别探讨这本书的优点和缺点。"
-    thinking_prompt = "我们今天来讨论一下 " + book_name + "，这本书大致说了：" + story_response + thinking_prompt + "请根据这些描述，用 3000-5000 字说说你阅读这本书的思考。可以一定程度上引申和拔高主题。"
+    feeling_prompt = "我们今天来讨论一下 " + book_title + "，这本书大致说了：" + story_response + feeling_prompt + "请根据这些描述，用 2000-3000 字你阅读这本书的感受。"
+    evaluation_prompt = "我们今天来讨论一下 " + book_title + "，这本书大致说了：" + story_response + evaluation_prompt + "请根据这些描述，用 2000-3000 字你阅读这本书的评价。分别探讨这本书的优点和缺点。"
+    thinking_prompt = "我们今天来讨论一下 " + book_title + "，这本书大致说了：" + story_response + thinking_prompt + "请根据这些描述，用 3000-5000 字说说你阅读这本书的思考。可以一定程度上引申和拔高主题。"
     
     feeling_response = smart_model.chat(feeling_prompt)
     evaluation_response = smart_model.chat(evaluation_prompt)
     thinking_response = smart_model.chat(thinking_prompt)
     
     report_prompt = f"""帮我写一篇有深度的书评, 必须完整包含后面的所有内容：
-    书名是{book_name}
+    书名是{book_title}
     
     # 大致剧情：
     {story_response}
@@ -74,13 +77,13 @@ def report_parser(book_name):
     - 感受、评价、思考三部分，可以使用分点的形式列举。
     """
     
-    with open(f"{book_name}_prompt.md", "w") as f:
+    with open(os.path.join(book_name, "report_prompt.md"), "w", encoding="utf-8") as f:
         f.write(report_prompt)
     
     report_response = smart_model.chat(report_prompt)
     
     # 保存到文件
-    with open(f"{book_name}.md", "w") as f:
+    with open(os.path.join(book_name, "report.md"), "w", encoding="utf-8") as f:
         f.write(report_response)
     
     return report_response

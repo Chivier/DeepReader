@@ -1,17 +1,16 @@
-import nerif
 import os
 
 clean_model_name = "ollama/qwen2.5:32b"
 
 def clean_douban(file_name):
     # store the text in a new file
-    new_file_name = file_name.split(".")[0] + "_cleaned.txt"
+    new_file_name = os.path.splitext(file_name)[0] + "_cleaned.txt"
 
-    with open(file_name, "r") as f:
+    with open(file_name, "r", encoding="utf-8") as f:
         text = f.read()
     
     if not "下载豆瓣客户端" in text:
-        with open(new_file_name, "w") as f:
+        with open(new_file_name, "w", encoding="utf-8") as f:
             f.write(text)
         return
         
@@ -25,12 +24,12 @@ def clean_douban(file_name):
         # remove all information before the tagline
         text = text.split(tagline)[1]
 
-    with open(new_file_name, "w") as f:
+    with open(new_file_name, "w", encoding="utf-8") as f:
         f.write(text)
 
 def clean_all_douban_files(dir_name):
     for file_name in os.listdir(dir_name):
-        if "cleaned" in file_name:
+        if not file_name.endswith(".txt") or file_name.endswith("_cleaned.txt"):
             continue
         clean_douban(os.path.join(dir_name, file_name))
 

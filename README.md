@@ -41,11 +41,16 @@ DeepReader combines advanced web scraping, natural language processing, and AI-p
 ### Setup
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/DeepReader.git
+git clone https://github.com/Chivier/DeepReader.git
 cd DeepReader
 
-# Install dependencies
+# Create an isolated environment
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+
+# Configure API credentials (.env is loaded automatically)
+cp .env.example .env
 
 # Set environment variables
 export OPENAI_API_KEY="your-api-key"
@@ -72,7 +77,7 @@ python reader/main.py --book "书名" --douban 2
 
 ```bash
 # Launch the Streamlit chatbot
-streamlit run website/chatbot.py
+streamlit run website/Home.py
 ```
 
 The web interface will be available at `http://localhost:8501`
@@ -112,11 +117,20 @@ DeepReader/
 
 ## Development
 
+```bash
+pip install -r requirements_dev.txt
+python -m pytest -q
+pip-audit -r requirements.txt --no-deps --disable-pip
+```
+
+[Maintenance guide](docs/MAINTENANCE.md) covers dependency updates, optional local transcription, data paths, and validation limits.
+
+
 For detailed development guidelines, architecture overview, and contribution instructions, please refer to [CLAUDE.md](CLAUDE.md).
 
 ### Key Technologies
-- **Web Scraping**: BeautifulSoup4, Selenium
-- **Video Processing**: yt-dlp, Whisper
+- **Web Scraping**: BeautifulSoup4, Requests
+- **Video Processing**: yt-dlp, optional OpenAI Whisper
 - **AI/LLM**: OpenAI API
 - **Web Framework**: Streamlit
 - **Data Processing**: Pandas, CSV

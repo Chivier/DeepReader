@@ -4,6 +4,9 @@ DeepReader 主页
 """
 
 import streamlit as st
+import runtime
+runtime.configure_import_paths()
+from runtime import BOOK_PROMPT_DIR
 
 # ============================================================================
 # 页面配置
@@ -34,8 +37,9 @@ with col1:
     - 🎯 获得个性化的阅读见解
     - 🔖 生成精美的阅读书签
     
-    [开始聊天 →](聊天室)
     """)
+
+    st.page_link("pages/1_💬_聊天室.py", label="开始聊天", icon="💬")
 
 with col2:
     st.markdown("### ➕ 添加新书")
@@ -46,8 +50,9 @@ with col2:
     - 📝 生成高质量阅读指南
     - ✨ 一键添加到书籍库
     
-    [添加新书 →](添加新书)
     """)
+
+    st.page_link("pages/2_➕_添加新书.py", label="添加新书", icon="➕")
 
 st.markdown("---")
 
@@ -80,10 +85,8 @@ with st.sidebar:
     """)
     
     st.markdown("### 📊 系统状态")
-    import os
-    book_prompt_dir = os.path.join(os.path.dirname(__file__), "book_prompt")
-    if os.path.exists(book_prompt_dir):
-        book_count = len([f for f in os.listdir(book_prompt_dir) if f.endswith('.md')])
+    if BOOK_PROMPT_DIR.exists():
+        book_count = len([p for p in BOOK_PROMPT_DIR.glob("*.md") if p.is_file() and not p.is_symlink()])
         st.metric("书籍总数", book_count)
     else:
         st.metric("书籍总数", 0)

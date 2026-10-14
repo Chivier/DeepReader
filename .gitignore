@@ -23,6 +23,9 @@ MANIFEST
 
 # Virtual environments
 venv/
+.venv/
+.pytest_cache/
+.ruff_cache/
 env/
 ENV/
 env.bak/
@@ -51,6 +54,7 @@ website/bookmarks/
 # Downloaded content and processed data
 data/downloads/
 data/processed/
+data/books/
 website/*/  # Book-specific data directories
 */video/
 */website/
@@ -59,6 +63,7 @@ website/*/  # Book-specific data directories
 *.txt
 !requirements.txt
 !requirements_dev.txt
+!requirements_video.txt
 !README.md
 
 # Temporary files

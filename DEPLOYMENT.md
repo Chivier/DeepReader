@@ -12,7 +12,7 @@ DeepReader is an AI-powered system for generating comprehensive book reviews and
 - **For video processing**: Additional 10GB temporary storage
 
 ### Software Requirements
-- Python 3.9+ (Python 3.12+ recommended)
+- Python 3.12+
 - pip or conda package manager
 - Git
 - Internet connection for API calls and web scraping
@@ -58,7 +58,7 @@ Create a `.env` file in the project root:
 # Required API Configuration
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_BASE_URL=https://api.openai.com/v1
-DEEPREADER_MODEL_NAME=gpt-4
+DEEPREADER_MODEL_NAME=gpt-4.1
 
 # Optional: Alternative API providers
 # OPENAI_BASE_URL=https://api.deepseek.com/v1
@@ -81,7 +81,7 @@ For development and testing:
 
 ```bash
 # Start the web interface
-streamlit run website/chatbot.py
+streamlit run website/Home.py
 
 # The application will be available at http://localhost:8501
 ```
@@ -95,7 +95,7 @@ streamlit run website/chatbot.py
 pip install streamlit
 
 # Run with production settings
-streamlit run website/chatbot.py --server.port 8501 --server.address 0.0.0.0
+streamlit run website/Home.py --server.port 8501 --server.address 0.0.0.0
 ```
 
 #### Option 2: Docker Deployment
@@ -125,7 +125,7 @@ COPY . .
 EXPOSE 8501
 
 # Run the application
-CMD ["streamlit", "run", "website/chatbot.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+CMD ["streamlit", "run", "website/Home.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
 ```
 
 Build and run:
@@ -147,7 +147,7 @@ docker run -p 8501:8501 --env-file .env deepreader
 4. Deploy automatically
 
 ##### Other Cloud Platforms
-- **Heroku**: Use `Procfile` with `web: streamlit run website/chatbot.py --server.port $PORT`
+- **Heroku**: Use `Procfile` with `web: streamlit run website/Home.py --server.port $PORT`
 - **AWS/GCP/Azure**: Use container services with the Docker image above
 
 ## Configuration
@@ -159,7 +159,7 @@ The system supports multiple AI providers:
 1. **OpenAI GPT Models**:
    ```bash
    OPENAI_BASE_URL=https://api.openai.com/v1
-   DEEPREADER_MODEL_NAME=gpt-4
+   DEEPREADER_MODEL_NAME=gpt-4.1
    ```
 
 2. **DeepSeek (Recommended for cost-effectiveness)**:

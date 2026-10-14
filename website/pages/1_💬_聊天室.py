@@ -4,14 +4,20 @@ DeepReader 主聊天界面
 """
 
 import streamlit as st
+import runtime
+runtime.configure_import_paths()
+from runtime import BOOK_PROMPT_DIR, CHAT_HISTORY_DIR, BOOKMARKS_DIR
+import html
 import openai
 import os
 import json
+import uuid
 from datetime import datetime
 import random
 import io
 import base64
 from cairosvg import svg2png, svg2pdf
+from bookmarks import validate_svg
 
 from prompt import compress_text, get_card_system_prompt, get_card_response
 
@@ -39,10 +45,12 @@ def get_api_client():
     return openai.OpenAI(
         base_url=openai_base_url,
         api_key=openai_api_key,
+        timeout=120,
+        max_retries=2,
     )
 
 client = get_api_client()
-model_name = os.getenv("DEEPREADER_MODEL_NAME", "gpt-4")
+model_name = os.getenv("DEEPREADER_MODEL_NAME", "gpt-4.1")
 
 def get_response(messages):
     """从 LLM API 获取响应"""
@@ -61,10 +69,7 @@ def get_response(messages):
 # ============================================================================
 def find_book_prompt_dir(start_path="."):
     """查找书籍提示文件目录"""
-    for root, dirs, files in os.walk(start_path):
-        if "book_prompt" in dirs:
-            return os.path.abspath(os.path.join(root, "book_prompt"))
-    return None
+    return str(BOOK_PROMPT_DIR)
 
 def load_available_books():
     """加载可用的书籍列表"""
@@ -74,7 +79,7 @@ def load_available_books():
         return [], None
     
     try:
-        books = [book[:-3] for book in os.listdir(book_prompt_dir) if book.endswith('.md')]
+        books = sorted(book.stem for book in BOOK_PROMPT_DIR.glob("*.md") if book.is_file() and not book.is_symlink())
         return books, book_prompt_dir
     except Exception as e:
         st.error(f"加载书籍列表失败: {e}")
@@ -137,6 +142,7 @@ if "previous_book" not in st.session_state:
     st.session_state.system_prompt = None
 elif st.session_state.previous_book != selected_book:
     st.session_state.messages = []
+    st.session_state.pop("chat_session_id", None)
     st.session_state.previous_book = selected_book
     st.session_state.possible_qa = None
     st.session_state.system_prompt = None
@@ -231,14 +237,7 @@ if st.session_state.get("system_prompt"):
     # 使用空容器确保提示始终在顶部
     prompt_container = st.container()
     with prompt_container:
-        # 使用更醒目的样式显示
-        st.markdown("""
-        <div style="background-color: #f0f8ff; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #4682b4;">
-            <p style="margin: 0; color: #333; font-size: 16px; line-height: 1.6;">
-        """, unsafe_allow_html=True)
-        st.markdown(st.session_state.system_prompt.replace('\n', '<br>'), unsafe_allow_html=True)
-        st.markdown("</p></div>", unsafe_allow_html=True)
-        st.markdown("---")
+        st.info(st.session_state.system_prompt)
 
 # ============================================================================
 # 提示模板配置
@@ -280,7 +279,9 @@ ENFJ（外向、温暖、善于倾听和分享的朋友形象）
 下面请和我像朋友一样轻松聊聊《{book_name}》这本书
 """
 
-datetime_tag = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+if "chat_session_id" not in st.session_state:
+    st.session_state.chat_session_id = uuid.uuid4().hex
+datetime_tag = st.session_state.chat_session_id
 initial_prompt = prompt_template.format(book_name=selected_book, book_prompt=book_prompt)
 
 # ============================================================================
@@ -301,7 +302,6 @@ for message in st.session_state.messages:
 # 聊天界面
 # ============================================================================
 if prompt := st.chat_input("输入你的想法..."):
-    print(f"{prompt} {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     # 显示用户消息
     st.chat_message("user").markdown(prompt)
@@ -318,7 +318,7 @@ if prompt := st.chat_input("输入你的想法..."):
         st.session_state.messages.append({"role": "assistant", "content": response})
         
         # 保存聊天历史
-        chat_history_dir = "website/chat_history"
+        chat_history_dir = str(CHAT_HISTORY_DIR)
         os.makedirs(chat_history_dir, exist_ok=True)
         with open(f"{chat_history_dir}/chat_history_{datetime_tag}.json", "w", encoding="utf-8") as f:
             json.dump(st.session_state.messages, f, ensure_ascii=False, indent=2)
@@ -376,59 +376,33 @@ if st.button("🔖 生成书签"):
                     else:
                         svg_code = card_response
                     
-                    # 转换SVG为PNG（白色背景）
-                    if 'background:' not in svg_code and 'background-color:' not in svg_code:
-                        svg_code = svg_code.replace('<svg', '<svg style="background-color: white"')
-                    
-                    png_bytes = io.BytesIO()
-                    svg2png(bytestring=svg_code.encode('utf-8'), write_to=png_bytes)
-                    png_bytes.seek(0)
-                    png_base64 = base64.b64encode(png_bytes.read()).decode()
-                    
-                    # 预览PNG
-                    st.markdown("### 📸 书签预览")
-                    st.image(png_bytes, caption="PNG 预览")
-                    
-                    # 转换SVG为PDF
-                    pdf_bytes = io.BytesIO()
-                    svg2pdf(bytestring=svg_code.encode('utf-8'), write_to=pdf_bytes)
-                    pdf_bytes.seek(0)
-                    pdf_base64 = base64.b64encode(pdf_bytes.read()).decode()
-                    
-                    # 创建下载按钮
-                    st.markdown("### 💾 保存书签")
-                    
-                    col1, col2 = st.columns(2)
-                    
-                    # PNG下载按钮
-                    with col1:
-                        st.download_button(
-                            label="🖼️ 保存图片",
-                            data=png_bytes.getvalue(),
-                            file_name=f"bookmark_{selected_book}.png",
-                            mime="image/png"
-                        )
-                    
-                    # PDF下载按钮
-                    with col2:
-                        st.download_button(
-                            label="📑 保存为 PDF",
-                            data=pdf_bytes.getvalue(),
-                            file_name=f"bookmark_{selected_book}.pdf",
-                            mime="application/pdf"
-                        )
-                    
-                    # 保存书签
-                    bookmark_dir = "website/bookmarks"
+                    svg_code = validate_svg(svg_code.strip())
+                    png_data = svg2png(bytestring=svg_code.encode("utf-8"), background_color="white")
+                    pdf_data = svg2pdf(bytestring=svg_code.encode("utf-8"), background_color="white")
+                    st.session_state.bookmark = {
+                        "book": selected_book, "svg": svg_code, "png": png_data, "pdf": pdf_data
+                    }
+                    bookmark_dir = str(BOOKMARKS_DIR)
                     os.makedirs(bookmark_dir, exist_ok=True)
-                    bookmark_filename = f"bookmark_{selected_book}_{datetime.now().strftime('%Y%m%d%H%M%S')}.svg"
-                    with open(f"{bookmark_dir}/{bookmark_filename}", "w", encoding="utf-8") as f:
+                    bookmark_filename = f"bookmark_{selected_book}_{datetime.now().strftime('%Y%m%d%H%M%S%f')}.svg"
+                    with open(os.path.join(bookmark_dir, bookmark_filename), "w", encoding="utf-8") as f:
                         f.write(svg_code)
-                    
                     st.success("书签生成成功！")
                     
             except Exception as e:
                 st.error(f"生成书签时出错: {e}")
+
+bookmark = st.session_state.get("bookmark")
+if bookmark and bookmark["book"] == selected_book:
+    st.image(bookmark["png"], caption="阅读书签")
+    cols = st.columns(3)
+    for col, label, key, extension, mime in [
+        (cols[0], "下载 SVG", "svg", "svg", "image/svg+xml"),
+        (cols[1], "下载 PNG", "png", "png", "image/png"),
+        (cols[2], "下载 PDF", "pdf", "pdf", "application/pdf"),
+    ]:
+        with col:
+            st.download_button(label, data=bookmark[key], file_name=f"bookmark_{selected_book}.{extension}", mime=mime)
 
 # ============================================================================
 # 侧边栏信息
