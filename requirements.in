@@ -2,7 +2,7 @@
 beautifulsoup4>=4.14,<5
 CairoSVG>=2.9.1,<3
 defusedxml>=0.7.1,<1
-openai>=3.31,<4
+openai>=3.37.0,<4
 pandas>=2.2,<4
 python-dotenv>=1.2.2,<2
 requests>=2.34.2,<3
