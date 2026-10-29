@@ -49,17 +49,15 @@ click==8.5.0
     #   -c requirements.txt
     #   streamlit
     #   uvicorn
-colorama==0.4.6 ; sys_platform == 'win32'
-    # via tqdm
 cssselect2==0.10.1
     # via
     #   -c requirements.txt
     #   cairosvg
-cuda-bindings==13.4.4 ; python_full_version < '3.15' and sys_platform == 'linux'
+cuda-bindings==13.4.4
     # via torch
-cuda-pathfinder==1.8.3 ; python_full_version < '3.15' and sys_platform == 'linux'
+cuda-pathfinder==1.8.3
     # via cuda-bindings
-cuda-toolkit==13.0.3.0 ; sys_platform == 'linux'
+cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3.0
     # via torch
 defusedxml==0.7.1
     # via
@@ -75,7 +73,7 @@ h11==0.16.0
     #   -c requirements.txt
     #   httpcore2
     #   uvicorn
-httpcore2==2.13.1 ; sys_platform != 'emscripten'
+httpcore2==2.13.1
     # via
     #   -c requirements.txt
     #   httpx2
@@ -83,10 +81,6 @@ httpx2==2.13.1
     # via
     #   -c requirements.txt
     #   openai
-httpx2-jsfetch==1.0 ; sys_platform == 'emscripten'
-    # via
-    #   -c requirements.txt
-    #   httpx2
 idna==3.20
     # via
     #   -c requirements.txt
@@ -141,46 +135,46 @@ numpy==2.5.4
     #   pandas
     #   pydeck
     #   streamlit
-nvidia-cublas==13.1.1.3 ; sys_platform == 'linux'
+nvidia-cublas==13.1.1.3
     # via
     #   cuda-toolkit
     #   nvidia-cudnn-cu13
     #   nvidia-cusolver
-nvidia-cuda-cupti==13.0.85 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cuda-cupti==13.0.85
     # via cuda-toolkit
-nvidia-cuda-nvrtc==13.0.88 ; sys_platform == 'linux'
+nvidia-cuda-nvrtc==13.0.88
     # via
     #   cuda-toolkit
     #   nvidia-cublas
-nvidia-cuda-runtime==13.0.96 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cuda-runtime==13.0.96
     # via cuda-toolkit
-nvidia-cudnn-cu13==9.24.0.43 ; sys_platform == 'linux'
+nvidia-cudnn-cu13==9.24.0.43
     # via torch
-nvidia-cufft==12.0.0.61 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cufft==12.0.0.61
     # via cuda-toolkit
-nvidia-cufile==1.15.1.6 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cufile==1.15.1.6
     # via cuda-toolkit
-nvidia-curand==10.4.0.35 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-curand==10.4.0.35
     # via cuda-toolkit
-nvidia-cusolver==12.0.4.66 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cusolver==12.0.4.66
     # via cuda-toolkit
-nvidia-cusparse==12.6.3.3 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-cusparse==12.6.3.3
     # via
     #   cuda-toolkit
     #   nvidia-cusolver
-nvidia-cusparselt-cu13==0.8.1 ; sys_platform == 'linux'
+nvidia-cusparselt-cu13==0.8.1
     # via torch
-nvidia-nccl-cu13==2.30.7 ; sys_platform == 'linux'
+nvidia-nccl-cu13==2.30.7
     # via torch
-nvidia-nvjitlink==13.4.92 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-nvjitlink==13.4.92
     # via
     #   cuda-toolkit
     #   nvidia-cufft
     #   nvidia-cusolver
     #   nvidia-cusparse
-nvidia-nvshmem-cu13==3.4.5 ; sys_platform == 'linux'
+nvidia-nvshmem-cu13==3.4.5
     # via torch
-nvidia-nvtx==13.0.85 ; (platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')
+nvidia-nvtx==13.0.85
     # via cuda-toolkit
 openai==3.31.0
     # via
@@ -211,7 +205,7 @@ pyarrow==26.0.0
     # via
     #   -c requirements.txt
     #   streamlit
-pycparser==3.11 ; implementation_name != 'PyPy'
+pycparser==3.11
     # via
     #   -c requirements.txt
     #   cffi
@@ -257,8 +251,6 @@ rpds-py==2026.9.1
     #   -c requirements.txt
     #   jsonschema
     #   referencing
-setuptools==84.0.0
-    # via torch
 six==1.17.0
     # via
     #   -c requirements.txt
@@ -292,11 +284,11 @@ torch==2.14.1
     # via openai-whisper
 tqdm==4.70.1
     # via openai-whisper
-triton==3.8.0 ; (python_full_version < '3.15' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux') or sys_platform == 'linux2'
+triton==3.8.0
     # via
     #   openai-whisper
     #   torch
-truststore==0.10.5 ; sys_platform != 'emscripten'
+truststore==0.10.5
     # via
     #   -c requirements.txt
     #   httpcore2
@@ -307,12 +299,9 @@ typing-extensions==4.16.0
     #   altair
     #   anyio
     #   beautifulsoup4
-    #   httpx2
     #   openai
     #   pydantic
     #   pydantic-core
-    #   referencing
-    #   starlette
     #   streamlit
     #   torch
     #   typing-inspection
@@ -320,10 +309,6 @@ typing-inspection==0.4.4
     # via
     #   -c requirements.txt
     #   pydantic
-tzdata==2026.5 ; sys_platform == 'emscripten' or sys_platform == 'win32'
-    # via
-    #   -c requirements.txt
-    #   pandas
 urllib3==2.8.0
     # via
     #   -c requirements.txt
@@ -333,7 +318,7 @@ uvicorn==0.54.0
     # via
     #   -c requirements.txt
     #   streamlit
-watchdog==6.0.0 ; sys_platform != 'darwin'
+watchdog==6.0.0
     # via
     #   -c requirements.txt
     #   streamlit
@@ -346,7 +331,7 @@ websockets==17.2
     # via
     #   -c requirements.txt
     #   streamlit
-yt-dlp==2026.8.19
+yt-dlp==2026.10.21
     # via
     #   -c requirements.txt
     #   -r requirements.in

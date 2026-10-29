@@ -40,12 +40,10 @@ h11==0.16.0
     # via
     #   httpcore2
     #   uvicorn
-httpcore2==2.13.1 ; sys_platform != 'emscripten'
+httpcore2==2.13.1
     # via httpx2
 httpx2==2.13.1
     # via openai
-httpx2-jsfetch==1.0 ; sys_platform == 'emscripten'
-    # via httpx2
 idna==3.20
     # via
     #   anyio
@@ -90,7 +88,7 @@ protobuf==7.36.2
     # via streamlit
 pyarrow==26.0.0
     # via streamlit
-pycparser==3.11 ; implementation_name != 'PyPy'
+pycparser==3.11
     # via cffi
 pydantic==2.14.1
     # via openai
@@ -130,7 +128,7 @@ tinycss2==1.5.1
     # via
     #   cairosvg
     #   cssselect2
-truststore==0.10.5 ; sys_platform != 'emscripten'
+truststore==0.10.5
     # via
     #   httpcore2
     #   httpx2
@@ -139,25 +137,20 @@ typing-extensions==4.16.0
     #   altair
     #   anyio
     #   beautifulsoup4
-    #   httpx2
     #   openai
     #   pydantic
     #   pydantic-core
-    #   referencing
-    #   starlette
     #   streamlit
     #   typing-inspection
 typing-inspection==0.4.4
     # via pydantic
-tzdata==2026.5 ; sys_platform == 'emscripten' or sys_platform == 'win32'
-    # via pandas
 urllib3==2.8.0
     # via
     #   -r requirements.in
     #   requests
 uvicorn==0.54.0
     # via streamlit
-watchdog==6.0.0 ; sys_platform != 'darwin'
+watchdog==6.0.0
     # via streamlit
 webencodings==0.6.1
     # via
@@ -165,5 +158,5 @@ webencodings==0.6.1
     #   tinycss2
 websockets==17.2
     # via streamlit
-yt-dlp==2026.8.19
+yt-dlp==2026.10.21
     # via -r requirements.in

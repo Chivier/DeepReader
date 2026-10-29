@@ -8,4 +8,4 @@ python-dotenv>=1.2.2,<2
 requests>=2.34.2,<3
 streamlit>=1.66,<2
 urllib3>=2.8.0,<3
-yt-dlp>=2026.8.19
+yt-dlp>=2026.10.21
